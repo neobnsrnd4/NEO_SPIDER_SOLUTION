@@ -1,0 +1,51 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="neo.spider.admin.common.mapper.AuthMapper">
+
+    <select id="findById" parameterType="String" resultType="neo.spider.admin.common.dto.FwkUserDTO">
+        SELECT * FROM FWK_USER
+    	WHERE USER_ID = #{username}
+    </select>
+    
+    <update id="updateUserSession">
+        UPDATE FWK_USER
+        SET
+            FINAL_APPROVAL_USER_NAME = #{sessionid},
+            LAST_UPDATE_DTIME = #{dtime}
+        WHERE
+            USER_ID = #{username}
+    </update>
+
+	<insert id="insertUser" parameterType="neo.spider.admin.common.dto.FwkUserDTO">
+	    INSERT INTO FWK_USER (
+	        USER_ID,
+	        USER_NAME,
+	        PASSWORD,
+	        ROLE_ID,
+	        POSITION_NAME,
+	        ADDRESS,
+	        CLASS_NAME,
+	        EMAIL,
+	        LAST_UPDATE_DTIME,
+	        LAST_UPDATE_USER_ID,
+	        ACCESS_IP,
+	        USER_SSN,
+	        PHONE
+	    )
+	    VALUES (
+	        #{userId},
+	        #{username},
+	        #{password},
+	        #{role},
+	        #{positionName},
+	        #{address},
+	        #{className},
+	        #{email},
+	        #{lastUpdateDtime},
+	        #{lastUpdateUserId},
+	        #{accessIp},
+	        #{userSsn},
+	        #{phone}
+	    )
+</insert>
+
+</mapper>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="neo.spider.admin.flow.mapper.RateLimiterMapper">
+    <select id="findByApplication" resultType="neo.spider.admin.flow.dto.ratelimiter.RateLimiterSearchDto">
+        SELECT r.ratelimiter_id, a.application_name, r.url, r.type, r.limit_for_period, r.limit_refresh_period, r.timeout_duration
+        FROM FWK_RATELIMITER r, FWK_APPLICATION a
+        WHERE r.application_id = a.application_id and r.application_id = #{applicationId}
+        <if test="type != null and type >= 0">and r.type = #{type}</if>
+        <if test="url != null and url != ''">and r.url LIKE concat('%', #{url}, '%')</if>
+        ORDER BY type
+    </select>
+
+    <insert id="create" parameterType="neo.spider.admin.flow.dto.ratelimiter.RateLimiterDto" useGeneratedKeys="true" keyProperty="ratelimiterId">
+        INSERT INTO FWK_RATELIMITER(application_id, type, limit_for_period, limit_refresh_period, timeout_duration, url)
+        VALUE (#{applicationId}, #{type}, #{limitForPeriod}, #{limitRefreshPeriod}, #{timeoutDuration}, #{url})
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM FWK_RATELIMITER
+        WHERE ratelimiter_id = #{ratelimiterId}
+    </delete>
+
+    <select id="findById" resultType="neo.spider.admin.flow.dto.ratelimiter.RateLimiterDto">
+        SELECT *
+        FROM FWK_RATELIMITER
+        WHERE ratelimiter_id = #{ratelimiterId}
+    </select>
+
+    <update id="update" parameterType="neo.spider.admin.flow.dto.ratelimiter.RateLimiterDto">
+        UPDATE FWK_RATELIMITER
+        SET limit_for_period = #{limitForPeriod}, limit_refresh_period=#{limitRefreshPeriod}, timeout_duration = #{timeoutDuration}
+        WHERE ratelimiter_id = #{ratelimiterId}
+    </update>
+</mapper>

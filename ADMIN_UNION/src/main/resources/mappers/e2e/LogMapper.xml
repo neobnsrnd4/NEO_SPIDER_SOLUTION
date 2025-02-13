@@ -1,0 +1,120 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="neo.spider.admin.e2e.mapper.LogMapper">
+
+    <select id="findByTraceId" parameterType="String" resultType="LogDTO">
+        SELECT * FROM FWK_E2E_LOGGING_EVENT
+        WHERE trace_id = #{traceId}
+        ORDER BY timestamp
+    </select>
+
+    <!-- 요청 지연 로그 개수 조회 -->
+    <select id="countDelayRequestLogs" parameterType="LogDTO" resultType="int">
+        SELECT COUNT(*) FROM FWK_E2E_LOGGING_DELAY
+        WHERE query is null
+        <if test="ltTimestamp != null"> AND timestamp &gt;= #{ltTimestamp}</if>
+        <if test="gtTimestamp != null"> And timestamp &lt;= #{gtTimestamp}</if>
+        <if test="traceId != null and traceId != ''"> And trace_id LIKE CONCAT('%', #{traceId}, '%')</if>
+        <if test="userId != null and userId != ''"> And user_id LIKE CONCAT('%', #{userId}, '%')</if>
+        <if test="userIp != null and userIp != ''"> And user_ip LIKE CONCAT('%', #{userIp}, '%')</if>
+        <if test="requestUrl != null and requestUrl != ''"> And request_url LIKE CONCAT('%', #{requestUrl}, '%')</if>
+        <if test="searchExecuteTime != null"> And execution_time >= #{searchExecuteTime}</if>
+    </select>
+
+    <!-- 요청 지연 로그 리스트 조회 -->
+    <select id="findDelayRequestLogs" resultType="LogDTO">
+        SELECT * FROM FWK_E2E_LOGGING_DELAY
+        WHERE query is null
+        <if test="paramDto.ltTimestamp != null"> And timestamp &gt;= #{paramDto.ltTimestamp}</if>
+        <if test="paramDto.gtTimestamp != null"> And timestamp &lt;= #{paramDto.gtTimestamp}</if>
+        <if test="paramDto.traceId != null and paramDto.traceId != ''"> And trace_id LIKE CONCAT('%', #{paramDto.traceId}, '%')</if>
+        <if test="paramDto.userId != null and paramDto.userId != ''"> And user_id LIKE CONCAT('%', #{paramDto.userId}, '%')</if>
+        <if test="paramDto.userIp != null and paramDto.userIp != ''"> And user_ip LIKE CONCAT('%' #{paramDto.userIp}, '%')</if>
+        <if test="paramDto.requestUrl != null and paramDto.requestUrl != ''"> And request_url LIKE CONCAT('%' #{paramDto.requestUrl}, '%')</if>
+        <if test="paramDto.searchExecuteTime != null"> And execution_time >= #{paramDto.searchExecuteTime}</if>
+        ORDER BY timestamp DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 쿼리 지연 로그 개수 조회 -->
+    <select id="countDelayQueryLogs" parameterType="LogDTO" resultType="int">
+        SELECT COUNT(*) FROM FWK_E2E_LOGGING_DELAY
+        WHERE query is not null
+        <if test="ltTimestamp != null"> AND timestamp &gt;= #{ltTimestamp}</if>
+        <if test="gtTimestamp != null"> And timestamp &lt;= #{gtTimestamp}</if>
+        <if test="traceId != null and traceId != ''"> And trace_id LIKE CONCAT('%', #{traceId}, '%')</if>
+        <if test="userId != null and userId != ''"> And user_id LIKE CONCAT('%', #{userId}, '%')</if>
+        <if test="userIp != null and userIp != ''"> And user_ip LIKE CONCAT('%', #{userIp}, '%')</if>
+        <if test="query != null and query != ''"> And query LIKE CONCAT('%', #{query}, '%')</if>
+        <if test="searchExecuteTime != null"> And execution_time >= #{searchExecuteTime}</if>
+    </select>
+
+    <!-- 쿼리 지연 로그 리스트 조회 -->
+    <select id="findDelayQueryLogs" resultType="LogDTO">
+        SELECT * FROM FWK_E2E_LOGGING_DELAY
+        WHERE query is not null
+        <if test="paramDto.ltTimestamp != null"> And timestamp &gt;= #{paramDto.ltTimestamp}</if>
+        <if test="paramDto.gtTimestamp != null"> And timestamp &lt;= #{paramDto.gtTimestamp}</if>
+        <if test="paramDto.traceId != null and paramDto.traceId != ''"> And trace_id LIKE CONCAT('%', #{paramDto.traceId}, '%')</if>
+        <if test="paramDto.userId != null and paramDto.userId != ''"> And user_id LIKE CONCAT('%', #{paramDto.userId}, '%')</if>
+        <if test="paramDto.userIp != null and paramDto.userIp != ''"> And user_ip LIKE CONCAT('%' #{paramDto.userIp}, '%')</if>
+        <if test="paramDto.query != null and paramDto.query != ''"> And query LIKE CONCAT('%' #{paramDto.query}, '%')</if>
+        <if test="paramDto.searchExecuteTime != null"> And execution_time >= #{paramDto.searchExecuteTime}</if>
+        ORDER BY timestamp DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 오류 로그 개수 조회 -->
+    <select id="countErrorLogs" parameterType="LogDTO" resultType="int">
+        SELECT COUNT(DISTINCT trace_id) FROM FWK_E2E_LOGGING_ERROR
+        WHERE 1=1
+        <if test="ltTimestamp != null"> AND timestamp &gt;= #{ltTimestamp}</if>
+        <if test="gtTimestamp != null"> And timestamp &lt;= #{gtTimestamp}</if>
+        <if test="traceId != null and traceId != ''"> And trace_id LIKE CONCAT('%', #{traceId}, '%')</if>
+        <if test="userId != null and userId != ''"> And user_id LIKE CONCAT('%', #{userId}, '%')</if>
+        <if test="userIp != null and userIp != ''"> And user_ip LIKE CONCAT('%', #{userIp}, '%')</if>
+        <if test="requestUrl != null and requestUrl != ''"> And request_url LIKE CONCAT('%', #{requestUrl}, '%')</if>
+    </select>
+
+    <!-- 오류 로그 리스트 조회 -->
+    <select id="findErrorLogs" resultType="LogDTO">
+        SELECT min(timestamp) timestamp, trace_id, request_url, user_ip, user_id FROM FWK_E2E_LOGGING_ERROR
+        WHERE 1=1
+        <if test="paramDto.ltTimestamp != null"> And timestamp &gt;= #{paramDto.ltTimestamp}</if>
+        <if test="paramDto.gtTimestamp != null"> And timestamp &lt;= #{paramDto.gtTimestamp}</if>
+        <if test="paramDto.traceId != null and paramDto.traceId != ''"> And trace_id LIKE CONCAT('%', #{paramDto.traceId}, '%')</if>
+        <if test="paramDto.userId != null and paramDto.userId != ''"> And user_id LIKE CONCAT('%', #{paramDto.userId}, '%')</if>
+        <if test="paramDto.userIp != null and paramDto.userIp != ''"> And user_ip LIKE CONCAT('%' #{paramDto.userIp}, '%')</if>
+        <if test="paramDto.requestUrl != null and paramDto.requestUrl != ''"> And request_url LIKE CONCAT('%' #{paramDto.requestUrl}, '%')</if>
+        GROUP BY trace_id
+        ORDER BY timestamp DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+    
+    <!-- table 검색 -->
+    <select id="findInfluenceLogs" resultType="LogDTO">
+        SELECT * FROM FWK_E2E_LOGGING_EVENT
+        WHERE execution_time IS NOT NULL AND CALLER_COMPONENT_NAME NOT LIKE 'http%'
+        <if test="searchType != null and searchType == 'table'">
+            AND query LIKE CONCAT('%', #{searchKeyword}, '%')
+        </if>
+        <if test="searchType != null and searchType == 'class'">
+            AND (current LIKE CONCAT('%', #{searchKeyword}, '%') OR called_by LIKE CONCAT('%', #{searchKeyword}, '%'))
+            AND query is null
+        </if>
+        ORDER BY timestamp DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+    
+    <select id="countInfluenceLogs" resultType="int">
+        SELECT count(*) FROM FWK_E2E_LOGGING_EVENT
+        WHERE execution_time IS NOT NULL AND CALLER_COMPONENT_NAME NOT LIKE 'http%'
+        <if test="searchType != null and searchType == 'table'">
+            AND query LIKE CONCAT('%', #{searchKeyword}, '%')
+        </if>
+        <if test="searchType != null and searchType == 'class'">
+            AND (current LIKE CONCAT('%', #{searchKeyword}, '%') OR called_by LIKE CONCAT('%', #{searchKeyword}, '%'))
+            AND query is null
+        </if>
+	</select>
+
+</mapper>

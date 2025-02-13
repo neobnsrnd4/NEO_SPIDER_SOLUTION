@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{layout/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<div class="page-content" layout:fragment="main">
+
+	<!-- Start Container Fluid -->
+	<div class="container-fluid">
+
+		<!-- Start here.... -->
+		<!-- ========== Page Title Start ========== -->
+		<div class="row">
+			<div class="col-12">
+				<div class="page-title-box">
+					<h4 class="mb-0 fw-bold">Home</h4>
+					<ol class="breadcrumb mb-0">
+						<li class="breadcrumb-item"><a href="javascript: void(0);">BrandUI</a></li>
+						<li class="breadcrumb-item active">Home</li>
+					</ol>
+				</div>
+			</div>
+		</div>
+		<!-- ========== Page Title End ========== -->
+
+		<div class="row">
+			<div class="col">
+				<div class="card">
+					<div class="card-body overflow-hidden position-relative">
+						<iconify-icon class="fs-36 text-info" icon="solar:asteroid-bold-duotone"></iconify-icon>
+						<h3 class="mb-0 fw-bold mt-3 mb-1">1,170건</h3>
+						<p class="text-muted">모니터링 대상</p>
+						<span class="badge fs-12 badge-soft-success"><i
+								class="ti ti-arrow-badge-up"></i> 전일대비 :8.72%</span>
+						<i class='ri-global-line widget-icon'></i>
+					</div> <!-- end card-body -->
+				</div> <!-- end card -->
+			</div> <!-- end col -->
+
+			<div class="col">
+				<div class="card">
+					<div class="card-body overflow-hidden position-relative">
+						<iconify-icon class="fs-36 text-success" icon="solar:black-hole-line-duotone"></iconify-icon>
+						<h3 class="mb-0 fw-bold mt-3 mb-1">321건</h3>
+						<p class="text-muted">응답지연</p>
+						<span class="badge fs-12 badge-soft-danger"><i class="ti ti-arrow-badge-down"></i> 전일대비 : 3.28%</span>
+						<i class='ri-file-chart-line widget-icon'></i>
+					</div> <!-- end card-body -->
+				</div> <!-- end card -->
+			</div> <!-- end col -->
+
+			<div class="col">
+				<div class="card">
+					<div class="card-body overflow-hidden position-relative">
+						<iconify-icon class="fs-36 text-primary" icon="solar:leaf-bold-duotone"></iconify-icon>
+						<h3 class="mb-0 fw-bold mt-3 mb-1">300건</h3>
+						<p class="text-muted">오류</p>
+						<span class="badge fs-12 badge-soft-danger"><i
+								class="ti ti-arrow-badge-down"></i>전일대비 : 5.69%</span>
+						<i class='ri-drag-move-line widget-icon'></i>
+					</div> <!-- end card-body -->
+				</div> <!-- end card -->
+			</div> <!-- end col -->
+
+			<div class="col">
+				<div class="card">
+					<div class="card-body overflow-hidden position-relative">
+						<iconify-icon class="fs-36 text-danger" icon="solar:crown-star-bold-duotone"></iconify-icon>
+						<h3 class="mb-0 fw-bold mt-3 mb-1">56건</h3>
+						<p class="text-muted">쿼리지연</p>
+						<span class="badge fs-12 badge-soft-success"><i
+								class="ti ti-arrow-badge-up"></i>전일대비 : 10.58%</span>
+						<i class='ri-hand-heart-line widget-icon'></i>
+					</div> <!-- end card-body -->
+				</div> <!-- end card -->
+			</div> <!-- end col -->
+
+			<div class="col">
+				<div class="card">
+					<div class="card-body overflow-hidden position-relative">
+						<iconify-icon class="fs-36 text-warning" icon="solar:cpu-bolt-line-duotone"></iconify-icon>
+						<h3 class="mb-0 fw-bold mt-3 mb-1">15명</h3>
+						<p class="text-muted">신규가입 사용자</p>
+						<span class="badge fs-12 badge-soft-success"><i
+								class="ti ti-arrow-badge-up"></i>전일대비 : 2.25%</span>
+						<i class='ri-stack-line widget-icon'></i>
+					</div> <!-- end card-body -->
+				</div> <!-- end card -->
+			</div> <!-- end col -->
+		</div>
+
+		<div class="row">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-body p-0">
+						<div class="row g-0">
+							<div class="col-lg-4">
+								<div class="p-3">
+									<h5 class="card-title">주간 오류 발생 현황</h5>
+									<div class="apex-charts mb-2 mt-n2" id="conversions"></div>
+									<div class="row text-center">
+										<div class="col-6">
+											<p class="text-muted mb-2">금주</p>
+											<h3 class="text-dark mb-3">23,500건</h3>
+										</div> <!-- end col -->
+										<div class="col-6">
+											<p class="text-muted mb-2">지난주</p>
+											<h3 class="text-dark mb-3">41,050건</h3>
+										</div> <!-- end col -->
+									</div> <!-- end row -->
+									<div class="text-center">
+										<button class="btn btn-light shadow-none w-100" type="button">상세</button>
+									</div> <!-- end row -->
+								</div>
+							</div> <!-- end left chart card -->
+							<div class="col-lg-8 border-start border-5">
+								<div class="p-3">
+									<div class="d-flex justify-content-between align-items-center">
+										<h4 class="card-title">거래화면유입/거래요청(PV기준)</h4>
+										<div>
+											<button class="btn btn-sm btn-outline-light" type="button">전체누적</button>
+											<button class="btn btn-sm btn-outline-light" type="button">1개월</button>
+											<button class="btn btn-sm btn-outline-light  active" type="button">6개월
+											</button>
+											<button class="btn btn-sm btn-outline-light" type="button">1년</button>
+										</div>
+									</div> <!-- end card-title-->
+									<div dir="ltr">
+										<div class="apex-charts" id="dash-performance-chart"></div>
+									</div>
+								</div>
+							</div> <!-- end right chart card -->
+						</div> <!-- end chart card -->
+					</div> <!-- end card body -->
+				</div> <!-- end card -->
+			</div> <!-- end col-->
+		</div> <!-- end row-->
+
+	</div>
+	<!-- End Container Fluid -->
+</div>
+<!-- ==================================================== -->
+<!-- End Page Content -->
+<!-- ==================================================== -->
+
+</html>

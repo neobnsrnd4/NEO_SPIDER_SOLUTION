@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" layout:decorate="~{layout/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>영향도 및 추적 관리</title>
+	<script>
+        const getBackQuery = () => {
+            const searchState = JSON.parse(sessionStorage.getItem("searchState"));
+			if (searchState == null){
+				return "/"
+			}
+            const {paramPath, ...params} = searchState;
+            return searchState.paramPath + "?" + new URLSearchParams(params).toString();
+        };
+
+        $(function(){
+            $('#backToSearch').attr("href", getBackQuery());
+        });
+	</script>
+</head>
+<div class="page-content" layout:fragment="main">
+
+	<div class="container" style="max-width: 90%; margin: 0 auto; padding: 0;">
+		<h2 class="mb-4 row justify-content-around">
+			<a class="col-1 text-start" id="backToSearch" href=""><i class="ri-arrow-left-s-line fs-1"></i></a>
+			<span class="col text-center">영향도 및 추적 관리</span>
+			<span class="col-1"></span>
+		</h2>
+
+		<div id="plantuml-container" style="justify-items: center;justify-content: center;">
+
+			<uml th:text="${imgSource}">
+
+			</uml>
+
+			<script src="//code.jquery.com/jquery.min.js"></script>
+			<script src="//cdn.rawgit.com/jmnote/plantuml-encoder/d133f316/dist/plantuml-encoder.min.js"></script>
+			<script>
+                $("uml").each(function () {
+                    var src = "//www.plantuml.com/plantuml/img/" + window.plantumlEncoder.encode($(this).text());
+                    $(this).replaceWith($('<img style="display:flex; justify-content:center; max-width: 100%;">').attr('src', src));
+                });
+			</script>
+			<script>
+
+                const plantumlContainer = document.getElementById("plantuml-container");
+
+			</script>
+
+		</div>
+
+		<br/>
+
+		<table class="table table-striped table-centered">
+			<thead>
+			<tr class="text-center">
+				<th>타임스탬프</th> <!-- 로그가 저장된 시간 -->
+				<th>종류</th> <!-- trace, slow, error -->
+				<th>추적ID</th> <!-- 추적 아이디 -->
+				<th>호출</th> <!-- caller component 정보 -->
+				<th>수행위치</th> <!-- target component  정보 -->
+				<th>수행시간(ms)</th> <!-- 수행 시간 출력 -->
+			</tr>
+			</thead>
+			<tbody>
+			<tr class="align-middle" th:each="log : ${logList}">
+				<!-- 타임스탬프 -->
+				<td class="text-center" th:text="${#dates.format(log.timestamp, 'yyyy-MM-dd HH:mm:ss.SSS')}"></td>
+				<td class="text-center">
+					<h4>
+					<span class="logger-name badge" th:if="${log.errorMessageText != null and log.delayMessageText != null}" th:text="'ERROR, DELAY'"></span>
+					<span class="logger-name badge" th:if="${log.errorMessageText != null and log.delayMessageText == null}" th:text="'ERROR'"></span>
+					<span class="logger-name badge" th:if="${log.errorMessageText == null and log.delayMessageText != null}" th:text="'DELAY'"></span>
+					<span class="logger-name badge" th:if="${log.errorMessageText == null and log.delayMessageText == null}">TRACE</span>
+					</h4>
+				</td>
+				<td>
+					<span th:if="${log.traceId != null}" th:text="${log.traceId}"></span>
+					<span th:unless="${log.traceId != null}">N/A</span>
+				</td>
+				<!-- 호출 -->
+				<td th:text="${log.targetComponentName}"></td>
+				<!-- 호출상세 -->
+				<td th:text="${log.requestUrl}"></td>
+				<!-- 수행결과 -->
+				<td class="text-center" th:text="${log.executionTime}"></td>
+			</tr>
+			</tbody>
+		</table>
+
+	</div>
+	<!-- 로그 종류 색상 js -->
+	<script src="/assets/js/e2e/logger_name_badge.js"></script>
+</div>
+<!-- ==================================================== -->
+<!-- End Page Content -->
+<!-- ==================================================== -->
+
+</html>
