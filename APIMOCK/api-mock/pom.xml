@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.neobns</groupId>
-	<artifactId>wiremock-service</artifactId>
+	<artifactId>api-mock</artifactId>
 	<version>0.0.1</version>
 	<name>apimock</name>
 	<description>APIMock Service for Spring Boot</description>

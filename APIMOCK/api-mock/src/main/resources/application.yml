@@ -1,6 +1,6 @@
 spring:
   application:
-    name: apiMock
+    name: api-mock
   web:
     resources:
       static-locations: classpath:/resources/, classpath:/static/, classpath:/wiremock/mappings/
