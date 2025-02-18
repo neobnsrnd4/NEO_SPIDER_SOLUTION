@@ -1,0 +1,16 @@
+{
+  "id" : "90959813-c73c-4b2c-8650-c037fb1aa25e",
+  "request" : {
+    "urlPathPattern" : "/users/[0-9]+",
+    "method" : "GET",
+    "queryParameters" : { }
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "{\"Rest API\":\"{{request.path.[0]}}\",\"number\":\"{{request.path.[1]}}\"}",
+    "transformers" : [ "response-template" ]
+  },
+  "uuid" : "90959813-c73c-4b2c-8650-c037fb1aa25e",
+  "persistent" : true,
+  "insertionIndex" : 7
+}

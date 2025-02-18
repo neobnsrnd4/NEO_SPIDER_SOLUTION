@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: apiMock
+  web:
+    resources:
+      static-locations: classpath:/resources/, classpath:/static/, classpath:/wiremock/mappings/
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/
+    suffix: .html
+  datasource:
+    url: jdbc:mariadb://neobns.com:13306/db2
+    username: POC_USER
+    password: neobns1!
+    driver-class-name: org.mariadb.jdbc.Driver
+    
+mybatis:
+  mapper-locations: classpath:mapper/**/*.xml
+  type-aliases-package: neo.spider.solution
+  configuration:
+      map-underscore-to-camel-case: true
+    
+server:
+  port: 8889
+
+admin:
+  id: admin
+  password: '1234'

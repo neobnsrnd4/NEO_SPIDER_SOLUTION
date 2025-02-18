@@ -1,0 +1,17 @@
+{
+  "id" : "b475ac2d-f8b4-4668-b5b7-d70b6d9425d3",
+  "request" : {
+    "urlPathPattern" : "/api/users/2",
+    "method" : "DELETE",
+    "queryParameters" : { }
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "{\"delete\":\"test\"}",
+    "proxyBaseUrl" : "https://reqres.in",
+    "transformers" : [ "response-template" ]
+  },
+  "uuid" : "b475ac2d-f8b4-4668-b5b7-d70b6d9425d3",
+  "persistent" : true,
+  "insertionIndex" : 20
+}

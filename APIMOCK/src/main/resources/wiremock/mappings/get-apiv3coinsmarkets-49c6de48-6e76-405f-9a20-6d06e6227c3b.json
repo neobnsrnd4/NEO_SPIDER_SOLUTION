@@ -1,0 +1,21 @@
+{
+  "id" : "49c6de48-6e76-405f-9a20-6d06e6227c3b",
+  "request" : {
+    "urlPathPattern" : "/api/v3/coins/markets",
+    "method" : "GET",
+    "queryParameters" : {
+      "vs_currency" : {
+        "equalTo" : "usd"
+      }
+    }
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "{\"version\":\"{{request.path.[1]}}\",\"currency\":\"{{request.query.vs_currency}}\"}",
+    "proxyBaseUrl" : "https://api.coingecko.com",
+    "transformers" : [ "response-template" ]
+  },
+  "uuid" : "49c6de48-6e76-405f-9a20-6d06e6227c3b",
+  "persistent" : true,
+  "insertionIndex" : 24
+}

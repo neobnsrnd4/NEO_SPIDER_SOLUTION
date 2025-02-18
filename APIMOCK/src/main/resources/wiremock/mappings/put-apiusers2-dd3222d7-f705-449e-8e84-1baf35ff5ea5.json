@@ -1,0 +1,20 @@
+{
+  "id" : "dd3222d7-f705-449e-8e84-1baf35ff5ea5",
+  "request" : {
+    "urlPathPattern" : "/api/users/2",
+    "method" : "PUT",
+    "queryParameters" : { },
+    "bodyPatterns" : [ {
+      "equalToJson" : "{\n    \"name\": \"morpheus\",\n    \"job\": \"zion resident\"\n}"
+    } ]
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "{\"test\":\"ok\"}",
+    "proxyBaseUrl" : "https://reqres.in",
+    "transformers" : [ "response-template" ]
+  },
+  "uuid" : "dd3222d7-f705-449e-8e84-1baf35ff5ea5",
+  "persistent" : true,
+  "insertionIndex" : 21
+}

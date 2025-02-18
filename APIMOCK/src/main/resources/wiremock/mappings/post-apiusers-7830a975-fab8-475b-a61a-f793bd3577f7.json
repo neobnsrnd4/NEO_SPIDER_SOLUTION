@@ -1,0 +1,20 @@
+{
+  "id" : "7830a975-fab8-475b-a61a-f793bd3577f7",
+  "request" : {
+    "urlPathPattern" : "/api/users",
+    "method" : "POST",
+    "queryParameters" : { },
+    "bodyPatterns" : [ {
+      "equalToJson" : "{\n  \"name\": \"morpheus\",\n  \"job\": \"leader\"\n}"
+    } ]
+  },
+  "response" : {
+    "status" : 400,
+    "body" : "{\"responseNameTest\":\"{{jsonPath request.body '$.name'}}\",\"reponseJobTest\":\"{{jsonPath request.body '$.job'}}\",\"post\":\"test 400 Bad Request\"}",
+    "proxyBaseUrl" : "https://reqres.in",
+    "transformers" : [ "response-template" ]
+  },
+  "uuid" : "7830a975-fab8-475b-a61a-f793bd3577f7",
+  "persistent" : true,
+  "insertionIndex" : 23
+}
