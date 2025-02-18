@@ -156,10 +156,10 @@
 				</div>
 				<div class="modal-body">
 					<form method="post" action="/admin/flow/updateApplication" id="updateApplication">
-						<input type="hidden" name="id" th:value="${app.applicationId}">
+						<input type="hidden" name="applicationId" th:value="${app.applicationId}">
 						<div class="mb-3">
 							<label class="form-label" for="appName">어플리케이션 이름</label>
-							<input class="form-control" id="appName" th:value="${app.applicationName}" placeholder="이곳에 어플리케이션 이름을 입력하세요" name="application_name" required type="text">
+							<input class="form-control" id="appName" th:value="${app.applicationName}" placeholder="이곳에 어플리케이션 이름을 입력하세요" name="applicationName" required type="text">
 						</div>
 					</form>
 				</div>
