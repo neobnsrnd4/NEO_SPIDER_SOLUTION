@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" layout:decorate="~{layout/layout}"
+      xmlns="http://www.w3.org/1999/html"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta content="width=device-width, initial-scale=1.0" name="viewport">
+	<title>유량제어 어플리케이션</title>
+	<script src="/assets/js/parameterSave.js"></script>
+</head>
+<body>
+<div class="page-content" layout:fragment="main">
+
+	<div class="container" style="max-width: 90%; margin: 0 auto; padding: 0;">
+		<h2 class="mb-4 text-center"><a href="/admin/flow/list">유량제어 어플리케이션 목록</a></h2>
+
+		<div class="row justify-content-between align-items-center mb-2">
+			<!--  버튼 그룹  -->
+			<div class="justify-content-start col-6 p-0 gap-2">
+				<button class="btn btn-soft-primary" id="openAppCreateModal">어플리케이션 등록</button>
+			</div>
+
+			<!--  검색창  -->
+			<form action="/admin/flow/list" class="col-6 p-0 align-items-center flex-grow-1" method="get">
+				<div class="justify-content-end input-group">
+					<input aria-label="id" class="form-control ms-2" name="applicationId" placeholder="아이디"
+					       style="max-width: 400px;" th:value="${param.applicationId}" type="number"/>
+					<input aria-label="application_name" class="form-control ms-2" name="applicationName" placeholder="어플리케이션 이름"
+					       style="max-width: 400px;" th:value="${param.applicationName}" type="text"/>
+					<input aria-label="created_date" class="form-control ms-2" name="createdDate" th:value="${param.createdDate}"
+					       style="max-width: 400px;" placeholder="생성날짜" type="date"/>
+					<span class="px-2">~</span>
+					<input aria-label="modified_date" class="form-control " name="modifiedDate" th:value="${param.modifiedDate}"
+					       style="max-width: 400px;" placeholder="수정날짜" type="date"/>
+					<button class="btn btn-sm btn-primary" type="submit">
+						<i class="ri-search-line fs-5"></i></button>
+				</div>
+			</form>
+		</div>
+		<div class="table-responsive">
+			<!-- 검색 결과 없을 때 메시지 -->
+			<div class="m-lg-5 p-lg-5 text-center" th:if="${results.size() == 0}">
+				<h4>조회 결과가 없습니다.</h4>
+			</div>
+
+			<table class="table table-hover table-centered" th:unless="${results.size() == 0}">
+				<thead>
+				<tr class="text-center">
+					<th>ID</th>
+					<th>어플리케이션 이름</th>
+					<th>생성날짜</th>
+					<th>수정날짜</th>
+					<th>삭제</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr th:each="app : ${results}" class="text-center">
+					<!-- ID -->
+					<td th:text="${app.applicationId}"></td>
+					<!-- 어플리케이션 이름 -->
+					<td class="text-start">
+						<a th:href="@{/admin/flow/detail/{id}(id=${app.applicationId})}"><span th:text="${app.applicationName}"></span></a>
+					</td>
+					<!-- 생성 날짜 -->
+					<td th:text="${app.createdDate}"></td>
+					<!-- 수정 날짜 -->
+					<td th:text="${app.modifiedDate}"></td>
+					<!-- 삭제 -->
+					<td>
+						<button class="btn btn-danger btn-sm delete-app">삭제</button>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<div class="row" th:if="${results.size() > 0}">
+			<ul class="pagination">
+				<!-- 이전 페이지 그룹 -->
+				<li class="page-item" th:classappend="${page > 10} ? '' : 'disabled'">
+					<a class="page-link"
+					   th:href="@{/admin/flow/list(page=${(page - 1)/10 * 10}, id=${param.applicationId}, applicationName=${param.applicationName}, createdDate=${param.createdDate}, modifiedDate=${param.modifiedDate})}"
+					   th:if="${page > 10}">
+						« 이전
+					</a>
+					<a class="page-link" href="#" th:unless="${page > 10}">
+						« 이전
+					</a>
+				</li>
+				<!-- 페이지 번호 그룹 -->
+				<li class="page-item"
+				    th:each="pageNum : ${#numbers.sequence((page - 1)/10 * 10 + 1, (((page - 1)/10 + 1) * 10 > totalPage ? totalPage : ((page - 1)/10 + 1) * 10))}">
+					<a class="page-link" th:classappend="${pageNum == page} ? 'active' : ''"
+					   th:href="@{/admin/flow/list(page=${pageNum}, id=${param.applicationId}, applicationName=${param.applicationName}, createdDate=${param.createdDate}, modifiedDate=${param.modifiedDate})}">
+						<span th:text="${pageNum}"></span>
+					</a>
+				</li>
+				<!-- 다음 페이지 그룹 -->
+				<li class="page-item"
+				    th:classappend="${((page - 1)/10 + 1) * 10 < totalPage} ? '' : 'disabled'">
+					<a class="page-link"
+					   th:href="@{/admin/flow/list(page=${((page - 1)/10 + 1) * 10 + 1}, id=${param.applicationId}, applicationName=${param.applicationName}, createdDate=${param.createdDate}, modifiedDate=${param.modifiedDate})}"
+					   th:if="${((page - 1)/10 + 1) * 10 < totalPage}">
+						다음 »
+					</a>
+					<a class="page-link" href="#" th:unless="${((page - 1)/10 + 1) * 10 < totalPage}">
+						다음 »
+					</a>
+				</li>
+			</ul>
+		</div>
+
+	</div>
+
+	<!-- 어플리케이션 등록 모달 팝업 -->
+	<div aria-hidden="true" aria-label="applicationModalLabel" class="modal" id="appCreateModal" tabindex="-1">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="applicationModalLabel">어플리케이션 등록</h5>
+					<button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+				</div>
+				<div class="modal-body">
+					<form method="post" action="/admin/flow/createApplication" id="createApplication">
+						<div class="mb-3">
+							<label class="form-label" for="appName">어플리케이션 이름</label>
+							<input class="form-control" id="appName" placeholder="이곳에 어플리케이션 이름을 입력하세요" name="applicationName" required type="text">
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-secondary" data-bs-dismiss="modal" type="button">닫기</button>
+					<button class="btn btn-primary" form="createApplication" type="submit">저장</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="/assets/js/flow/application_list.js"></script>
+</div>
+<!-- ==================================================== -->
+<!-- End Page Content -->
+<!-- ==================================================== -->
+</body>
+</html>

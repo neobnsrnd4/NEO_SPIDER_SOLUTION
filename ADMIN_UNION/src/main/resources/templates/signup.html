@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<!-- Title Meta -->
+	<meta charset="utf-8"/>
+	<title>Sign Up | BrandUI - Modern UI Kit with Layout</title>
+	<meta content="width=device-width, initial-scale=1.0" name="viewport">
+	<meta content="A fully responsive premium admin dashboard template, Real Estate Management Admin Template"
+	      name="description"/>
+	<meta content="Techzaa" name="author"/>
+	<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+
+	<!-- App favicon -->
+	<link href="/assets/images/favicon.ico" rel="shortcut icon">
+
+	<!-- Vendor css (Require in all Page) -->
+	<link href="/assets/css/vendor.min.css" rel="stylesheet" type="text/css"/>
+
+	<!-- Icons css (Require in all Page) -->
+	<link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css"/>
+
+	<!-- App css (Require in all Page) -->
+	<link href="/assets/css/app.min.css" rel="stylesheet" type="text/css"/>
+
+	<!-- Theme Config js (Require in all Page) -->
+	<script src="/assets/js/config.min.js"></script>
+</head>
+
+<body class="authentication-bg">
+
+<div class="account-pages pt-2 pt-sm-5 pb-4 pb-sm-5">
+	<div class="container">
+		<div class="row justify-content-center">
+			<div class="col-xl-5">
+				<div class="card auth-card">
+					<div class="card-body px-3 py-5">
+						<div class="mx-auto mb-4 text-center auth-logo">
+							<a class="logo-dark" href="index_page.html">
+								<img alt="logo dark" height="32" src="/assets/images/logo-dark.png">
+							</a>
+
+							<a class="logo-light" href="index_page.html">
+								<img alt="logo light" height="28" src="/assets/images/logo-light.png">
+							</a>
+						</div>
+
+						<h2 class="fw-bold text-uppercase text-center fs-18">사용자 추가</h2>
+						<p class="text-muted text-center mt-1 mb-4">신규사용자 정보를 입력하세요</p>
+
+						<!-- 에러 메시지 출력 -->
+						<div>
+							<ul style="color: red;">
+								<th:block th:each="error : ${errors}">
+									<li th:text="${error.defaultMessage}"></li>
+								</th:block>
+							</ul>
+						</div>
+						<div class="px-4">
+							<form action="/registerUser" class="" method="POST" novalidate>
+								<!-- 사용자명과 이메일 한 줄로 배치 -->
+								<div class="mb-2 row">
+									<!-- 사용자명 -->
+									<div class="col">
+										<label class="form-label" for="username">사용자명</label>
+										<input class="form-control bg-light bg-opacity-50 border-0 shadow-sm py-2 px-3" id="username" maxlength="20"
+										       minlength="3"
+										       name="username"
+										       placeholder="사용자명을 입력하세요" required th:value="${user.username}" type="text">
+									</div>
+									<!-- 이메일 -->
+									<div class="col">
+										<label class="form-label" for="email">이메일</label>
+										<input class="form-control bg-light bg-opacity-50 border-0 shadow-sm py-2 px-3" id="email" name="email"
+										       placeholder="이메일을 입력하세요"
+										       required
+										       th:value="${user.email}" type="email">
+									</div>
+								</div>
+
+								<!-- 패스워드 -->
+								<div class="mb-2 row">
+									<div class="col">
+										<label class="form-label" for="password">패스워드</label>
+										<input class="form-control bg-light bg-opacity-50 border-0 shadow-sm py-2 px-3" id="password" maxlength="50"
+										       minlength="8"
+										       name="password"
+										       pattern="^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$" placeholder="패스워드를 입력하세요" required th:value="${user.password}"
+										       type="password">
+									</div>
+									<div class="col">
+										<label class="form-label" for="confirmPassword">패스워드 확인</label>
+										<input class="form-control bg-light bg-opacity-50 border-0 shadow-sm py-2 px-3" id="confirmPassword" maxlength="50"
+										       minlength="8"
+										       name="confirmPassword"
+										       placeholder="패스워드를 확인하세요" required type="password">
+									</div>
+								</div>
+
+								<!-- 전화번호 -->
+								<div class="mb-2">
+									<label class="form-label" for="phone">전화번호</label>
+									<input class="form-control bg-light bg-opacity-50 border-0 shadow-sm py-2 px-3" id="phone" name="phone"
+									       pattern="^01(?:0|1|[6-9])-(\d{3,4})-(\d{4})$"
+									       placeholder="전화번호를 입력하세요"
+									       required th:value="${user.phone}"
+									       type="tel">
+								</div>
+
+								<!-- 주민등록번호 -->
+								<div class="mb-2">
+									<label class="form-label" for="userSsn">주민등록번호</label>
+									<input class="form-control bg-light bg-opacity-50 border-0 shadow-sm py-2 px-3" id="userSsn" name="userSsn"
+									       pattern="^\d{6}-\d{7}$"
+									       placeholder="주민등록번호를 입력하세요"
+									       required th:value="${user.userSsn}" type="text">
+								</div>
+
+								<!-- 셀렉트박스: 권한, 사용자 상태 코드, 업무 권한 코드 -->
+								<div class="mb-2 row">
+									<!-- 권한 -->
+									<div class="col">
+										<label class="form-label" for="role">권한</label>
+										<select class="form-control bg-light bg-opacity-50 border-0 shadow-sm py-2 px-3" id="role"
+										        name="role"
+										        required>
+											<option value="">선택</option>
+											<option th:selected="${user.role == 'admin'}" value="admin">관리자</option>
+											<option th:selected="${user.role == 'user'}" value="user">사용자</option>
+											<option th:selected="${user.role == 'manager'}" value="manager">매니저</option>
+										</select>
+									</div>
+									<!-- 사용자 상태 코드 -->
+									<div class="col">
+										<label class="form-label" for="userStateCode">사용자 상태 코드</label>
+										<select class="form-control bg-light bg-opacity-50 border-0 shadow-sm py-2 px-3" id="userStateCode"
+										        name="userStateCode"
+										        required>
+											<option value="">선택</option>
+											<option th:selected="${user.userStateCode == 'AA123'}" value="AA123">AA123
+											</option>
+											<option th:selected="${user.userStateCode == 'BB456'}" value="BB456">BB456
+											</option>
+										</select>
+									</div>
+									<!-- 업무 권한 코드 -->
+									<div class="col">
+										<label class="form-label" for="bizAuthCode">업무 권한 코드</label>
+										<select class="form-control bg-light bg-opacity-50 border-0 shadow-sm py-2 px-3" id="bizAuthCode"
+										        name="bizAuthCode"
+										        required>
+											<option value="">선택</option>
+											<option th:selected="${user.bizAuthCode == 'auth1'}" value="auth1">권한1
+											</option>
+											<option th:selected="${user.bizAuthCode == 'auth2'}" value="auth2">권한2
+											</option>
+										</select>
+									</div>
+								</div>
+
+								<!-- 주소 -->
+								<div class="mb-2">
+									<label class="form-label" for="address">주소</label>
+									<input class="form-control bg-light bg-opacity-50 border-0 shadow-sm py-2 px-3" id="address" maxlength="100"
+									       minlength="20"
+									       name="address"
+									       placeholder="주소를 입력하세요" required th:value="${user.address}" type="text">
+								</div>
+
+								<!-- 제출 버튼 -->
+								<div class="mb-2 text-center d-grid">
+									<button class="btn btn-danger py-2 px-4 rounded-pill shadow-sm" type="submit">Create
+										Account
+									</button>
+								</div>
+							</form>
+
+
+							<!-- 폼검증소스 보기 버튼 -->
+							<div class="text-center mt-4">
+								<button class="btn btn-primary py-2 px-4 rounded-pill shadow-sm" data-bs-target="#formValidationModal"
+								        data-bs-toggle="modal" type="button">
+									폼 검증 소스 보기
+								</button>
+							</div>
+
+							<!-- 모달 시작 -->
+							<div aria-hidden="true" aria-labelledby="formValidationModalLabel" class="modal fade"
+							     id="formValidationModal" tabindex="-1">
+								<div class="modal-dialog modal-lg">
+									<div class="modal-content">
+										<!-- 모달 헤더 -->
+										<div class="modal-header">
+											<h5 class="modal-title" id="formValidationModalLabel">폼 검증 소스 보기</h5>
+											<button aria-label="Close" class="btn-close" data-bs-dismiss="modal"
+											        type="button"></button>
+										</div>
+										<!-- 모달 바디 -->
+										<div class="modal-body text-center">
+											<img alt="폼 검증 소스 이미지" class="img-fluid" src="/assets/images/userDTO.png"/>
+										</div>
+										<!-- 모달 푸터 -->
+										<div class="modal-footer">
+											<button class="btn btn-secondary" data-bs-dismiss="modal" type="button">닫기
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+
+						</div> <!-- end col -->
+					</div> <!-- end card-body -->
+				</div> <!-- end card -->
+			</div> <!-- end col -->
+		</div> <!-- end row -->
+	</div>
+</div>
+
+
+<!-- Vendor Javascript (Require in all Page) -->
+<script src="/assets/js/vendor.js"></script>
+
+<!-- App Javascript (Require in all Page) -->
+<script src="/assets/js/app.js"></script>
+
+
+</body>
+
+</html>
