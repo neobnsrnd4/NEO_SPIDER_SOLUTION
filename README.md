@@ -4,7 +4,6 @@
 solution명  
 ├─ spider-프로젝트명  
 │&nbsp;&emsp;├─ src/  
-│&nbsp;&emsp;├─ resource/  
 │&nbsp;&emsp;└─ ...   
 └─ document  
 &emsp;&emsp;├─ Spider_solution명_솔루션.pptx  
