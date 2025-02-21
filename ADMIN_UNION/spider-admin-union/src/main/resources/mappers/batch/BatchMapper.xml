@@ -1,0 +1,120 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="neo.spider.admin.batch.mapper.BatchMapper">
+
+    <!--BatchJobInstance : BATCH_JOB_INSTANCE table -->
+    <resultMap id="instanceResultMap" type="neo.spider.admin.batch.dto.BatchJobInstanceDTO">
+        <id property="executionId" column="JOB_EXECUTION_ID"/>
+        <id property="instanceId" column="JOB_INSTANCE_ID"/>
+        <result property="version" column="VERSION"/>
+        <result property="jobName" column="JOB_NAME"/>
+        <result property="jobKey" column="JOB_KEY"/>
+
+        <association property="exec" resultMap="executionResultMap"/>
+        <collection property="execParams" ofType="neo.spider.admin.batch.dto.BatchJobExecutionParamsDTO"
+                    resultMap="paramsResultMap"/>
+    </resultMap>
+
+    <!--BatchJobExecution : BATCH_JOB_EXECUTION table -->
+    <resultMap id="executionResultMap" type="neo.spider.admin.batch.dto.BatchJobExecutionDTO">
+        <id property="executionId" column="JOB_EXECUTION_ID"/>
+        <result property="version" column="VERSION"/>
+        <result property="instanceId" column="JOB_INSTANCE_ID"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="startTime" column="START_TIME"/>
+        <result property="endTime" column="END_TIME"/>
+        <result property="status" column="STATUS"/>
+        <result property="exitCode" column="EXIT_CODE"/>
+        <result property="exitMessage" column="EXIT_MESSAGE"/>
+        <result property="updateTime" column="LAST_UPDATED"/>
+
+        <collection property="steps" ofType="neo.spider.admin.batch.dto.BatchStepExecutionDTO"
+                    resultMap="stepResultMap"/>
+    </resultMap>
+
+    <!--BatchJobExecutionParams : BATCH_JOB_EXECUTION_PARAMS table -->
+    <resultMap id="paramsResultMap" type="neo.spider.admin.batch.dto.BatchJobExecutionParamsDTO">
+        <id property="executionId" column="JOB_EXECUTION_ID"/>
+        <result property="parameterName" column="PARAMETER_NAME"/>
+        <result property="parameterType" column="PARAMETER_TYPE"/>
+        <result property="parameterValue" column="PARAMETER_VALUE"/>
+        <result property="identifying" column="IDENTIFYING"/>
+    </resultMap>
+
+    <!--BatchStepExecution : BATCH_JOB_EXECUTION table -->
+    <resultMap id="stepResultMap" type="neo.spider.admin.batch.dto.BatchStepExecutionDTO">
+        <id property="stepId" column="STEP_EXECUTION_ID"/>
+        <result property="version" column="VERSION"/>
+        <result property="stepName" column="STEP_NAME"/>
+        <result property="executionId" column="JOB_EXECUTION_ID"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="startTime" column="START_TIME"/>
+        <result property="endTime" column="END_TIME"/>
+        <result property="status" column="STATUS"/>
+        <result property="commitCount" column="COMMIT_COUNT"/>
+        <result property="readCount" column="READ_COUNT"/>
+        <result property="filterCount" column="FILTER_COUNT"/>
+        <result property="writeCount" column="WRITE_COUNT"/>
+        <result property="readSkipCount" column="READ_SKIP_COUNT"/>
+        <result property="writeSkipCount" column="WRITE_SKIP_COUNT"/>
+        <result property="processSkipCount" column="PROCESS_SKIP_COUNT"/>
+        <result property="rollbackCount" column="ROLLBACK_COUNT"/>
+        <result property="exitCode" column="EXIT_CODE"/>
+        <result property="exitMessage" column="EXIT_MESSAGE"/>
+        <result property="updateTime" column="LAST_UPDATED"/>
+    </resultMap>
+
+    <select id="countJobs" parameterType="neo.spider.admin.batch.dto.BatchJobInstanceDTO" resultType="int">
+        SELECT count(j.JOB_INSTANCE_ID) as cnt
+        FROM BATCH_JOB_INSTANCE j, BATCH_JOB_EXECUTION e
+        WHERE j.JOB_INSTANCE_ID = e.JOB_INSTANCE_ID
+        <if test="executionId != null and executionId > 0"> and e.JOB_EXECUTION_ID = #{executionId}</if>
+        <if test="jobName != null and jobName != ''"> and j.JOB_NAME like concat('%', #{jobName}, '%')</if>
+        <if test="startDate != null"> and DATE(CREATE_TIME) between #{startDate} and #{endDate}</if>
+        <if test="status != null and status != ''"> and STATUS = #{status}</if>
+    </select>
+
+    <select id="findJobs" resultMap="instanceResultMap">
+        SELECT j.JOB_INSTANCE_ID, j.JOB_NAME, e.JOB_EXECUTION_ID, e.VERSION, e.CREATE_TIME,
+               e.START_TIME, e.END_TIME, e.STATUS, e.EXIT_CODE, e.EXIT_MESSAGE, e.LAST_UPDATED
+        FROM BATCH_JOB_INSTANCE j, BATCH_JOB_EXECUTION e
+        WHERE j.JOB_INSTANCE_ID = e.JOB_INSTANCE_ID
+        <if test="paramDto.executionId != null and paramDto.executionId > 0">and e.JOB_EXECUTION_ID = #{paramDto.executionId}</if>
+        <if test="paramDto.jobName != null and paramDto.jobName != ''">and j.JOB_NAME like concat('%', #{paramDto.jobName}, '%')</if>
+        <if test="paramDto.startDate != null"> and DATE(CREATE_TIME) between #{paramDto.startDate} and #{paramDto.endDate}</if>
+        <if test="paramDto.status != null and paramDto.status != ''">and STATUS = #{paramDto.status}</if>
+        ORDER BY j.JOB_INSTANCE_ID DESC, e.JOB_EXECUTION_ID DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="findJobById" parameterType="int" resultMap="instanceResultMap">
+        SELECT j.JOB_INSTANCE_ID, j.JOB_NAME, j.JOB_KEY, e.JOB_EXECUTION_ID, e.VERSION,
+               e.CREATE_TIME, e.START_TIME, e.END_TIME, e.STATUS, e.EXIT_CODE, e.EXIT_MESSAGE,
+               e.LAST_UPDATED, p.PARAMETER_NAME, p.PARAMETER_TYPE, p.PARAMETER_VALUE, p.IDENTIFYING
+        FROM BATCH_JOB_INSTANCE j,
+             BATCH_JOB_EXECUTION e
+                 left join BATCH_JOB_EXECUTION_PARAMS p
+                           ON e.JOB_EXECUTION_ID = p.JOB_EXECUTION_ID
+        WHERE j.JOB_INSTANCE_ID = e.JOB_INSTANCE_ID
+          and e.JOB_INSTANCE_ID = #{instanceId}
+          and e.JOB_EXECUTION_ID = #{executionId}
+        order by JOB_INSTANCE_ID desc, e.JOB_EXECUTION_ID desc
+    </select>
+
+    <select id="findStepById" parameterType="int" resultMap="executionResultMap">
+        SELECT j.JOB_INSTANCE_ID, j.JOB_NAME, e.JOB_EXECUTION_ID, e.VERSION, e.CREATE_TIME,
+               e.START_TIME, e.END_TIME, e.STATUS, e.EXIT_CODE, e.EXIT_MESSAGE, e.LAST_UPDATED, s.*
+        FROM BATCH_JOB_INSTANCE j,
+             BATCH_JOB_EXECUTION e
+                 left join BATCH_STEP_EXECUTION s
+                           ON e.JOB_EXECUTION_ID = s.JOB_EXECUTION_ID
+        WHERE j.JOB_INSTANCE_ID = e.JOB_INSTANCE_ID
+          and e.JOB_EXECUTION_ID = #{executionId}
+    </select>
+
+    <select id="findStepsByJobId" parameterType="int" resultMap="stepResultMap">
+        SELECT s.*
+        FROM BATCH_STEP_EXECUTION s
+        WHERE s.JOB_EXECUTION_ID = #{executionId}
+    </select>
+
+</mapper>
