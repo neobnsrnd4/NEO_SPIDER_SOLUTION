@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Page</title>
+    <script>
+        let date = new Date();
+        console.log(date)
+        console.log(window.location.pathname + " loaded");
+    </script>
+</head>
+<body>
+    <h1 th:text="${path}"></h1>
+    <p th:text="${id}"></p>
+</body>
+</html>

@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: flowcontrol
+  datasource:
+#    url: jdbc:mariadb://neobns.com:13306/db2
+#    username: POC_USER
+#    password: neobns1!
+#    driver-class-name: org.mariadb.jdbc.Driver
+    password: 1234
+    username: root
+    url: jdbc:mysql://localhost:3306/test
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+server:
+  port: 8081
+mybatis:
+  mapper-locations: classpath:mappers/*.xml
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en" layout:decorate="~{layout/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>유량제어 어플리케이션 상세</title>
+
+	<script>
+        const getBackQuery = () => {
+            const searchState = JSON.parse(sessionStorage.getItem("searchState"));
+            const {paramPath, ...params} = searchState;
+            return searchState.paramPath + "?" + new URLSearchParams(params).toString();
+        };
+
+        $(function(){
+            $('#backToSearch').attr("href", getBackQuery());
+        });
+	</script>
+</head>
+<div class="page-content" layout:fragment="main">
+
+	<div class="container" style="max-width: 90%; margin: 0 auto; padding: 0;">
+		<h2 class="mb-4 row justify-content-around">
+			<a class="col-1 text-start" id="backToSearch" href=""><i class="ri-arrow-left-s-line fs-1"></i></a>
+			<a class="col text-center" th:href="@{/admin/flow/detail/{id}(id=${app.applicationId})}"><span th:text="${app.applicationName} + ' 상세보기'"></span></a>
+			<span class="col-1"><button id="openAppUpdateModal" class="btn btn-soft-primary">수정</button></span>
+		</h2>
+
+		<form id="searchForm">
+
+		<div class="card mb-3">
+			<div class="card-header">
+				<div class="row align-items-center">
+					<div class="col">
+						<h4 class="mb-0">
+							<span class="align-middle">동시 수행 제한</span>
+							<button id="createBulkhead" class="open-bulkhead-modal btn btn-soft-primary ms-2" data-type="create" type="button">등록</button>
+						</h4>
+					</div>
+					<div class="col-auto d-sm-block">
+						<div class="input-group">
+							<input aria-label="url" class="form-control ms-2" name="bulkheadUrl" type="text" th:value="${bulkheadUrl}" placeholder="URL 패턴"/>
+							<button class="btn btn-sm btn-primary" type="submit">
+								<i class="ri-search-line fs-5"></i></button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="card-body border-top">
+				<div class="m-lg-3 p-lg-3 text-center" th:if="${bulkheads.isEmpty()}">
+					<h4>조회 결과가 없습니다.</h4>
+				</div>
+				<table th:unless="${bulkheads.isEmpty()}" class="table table-hover table-centered table-sm">
+					<thead>
+					<tr class="text-center">
+						<td>아이디</td>
+						<td>어플리케이션</td>
+						<td>URL 패턴</td>
+						<td>최대 동시 요청</td>
+						<td>제한 초과시 대기 시간(초)</td>
+						<td>삭제</td>
+					</tr>
+					</thead>
+					<tbody>
+					<tr th:each="bulkhead:${bulkheads}" class="text-center">
+						<td th:text="${bulkhead.bulkheadId}"></td>
+						<td>
+							<a href="#" class="open-bulkhead-modal" th:attr="data-id=${bulkhead.bulkheadId}, data-type='update'">
+								<span th:text="${bulkhead.applicationName}"></span>
+							</a>
+						</td>
+						<td th:text="${bulkhead.url}"></td>
+						<td th:text="${bulkhead.maxConcurrentCalls}"></td>
+						<td th:text="${bulkhead.getMaxWaitDuration()}"></td>
+						<td><button class="delete-bulkhead btn btn-sm btn-danger" th:attr="data-id=${bulkhead.bulkheadId}, data-name=${bulkhead.applicationName}" type="button">삭제</button></td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<div class="card mb-3">
+			<div class="card-header">
+				<div class="row align-items-center">
+					<div class="col">
+						<h4 class="mb-0">
+							<span class="align-middle">단위 시간당 요청 제한</span>
+							<button id="createRateLimiter" class="open-rateLimiter-modal btn btn-soft-primary ms-2" data-type="create" type="button">등록</button>
+						</h4>
+					</div>
+					<div class="col-auto d-sm-block">
+						<div class="input-group">
+							<select aria-label="type" class="form-select ms-2" name="ratelimiterType">
+								<option value="-1" th:selected="${ratelimiterType == -1}">--타입--</option>
+								<option value="0" th:selected="${ratelimiterType == 0}">전체</option>
+								<option value="1" th:selected="${ratelimiterType == 1}">URL별</option>
+								<option value="2" th:selected="${ratelimiterType == 2}">접속자별</option>
+							</select>
+							<input aria-label="url" class="form-control ms-2" name="ratelimiterUrl" type="text" th:value="${ratelimiterUrl}" placeholder="URL 패턴"/>
+							<button class="btn btn-sm btn-primary" type="submit">
+								<i class="ri-search-line fs-5"></i></button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="card-body border-top">
+				<div class="m-lg-3 p-lg-3 text-center" th:if="${rateLimiters.isEmpty()}">
+					<h4>조회 결과가 없습니다.</h4>
+				</div>
+				<table th:unless="${rateLimiters.isEmpty()}" class="table table-hover table-centered table-sm">
+					<thead>
+					<tr class="text-center">
+						<td>아이디</td>
+						<td>어플리케이션</td>
+						<td>타입</td>
+						<td>URL 패턴</td>
+						<td>요청 제한</td>
+						<td>제한 초기화 시간(초)</td>
+						<td>제한 초과시 대기 시간(초)</td>
+						<td>삭제</td>
+					</tr>
+					</thead>
+					<tbody>
+					<tr th:each="rateLimiter:${rateLimiters}" class="text-center">
+						<td th:text="${rateLimiter.ratelimiterId}"></td>
+						<td>
+							<a href="#" class="open-rateLimiter-modal" th:attr="data-id=${rateLimiter.ratelimiterId}, data-type='update'">
+								<span th:text="${rateLimiter.applicationName}"></span>
+							</a>
+						</td>
+						<td th:if="${rateLimiter.type == 0}">전체</td>
+						<td th:if="${rateLimiter.type == 1}">URL별</td>
+						<td th:if="${rateLimiter.type == 2}">접속자별</td>
+						<td th:text="${rateLimiter.url}"></td>
+						<td th:text="${rateLimiter.limitForPeriod}"></td>
+						<td th:text="${rateLimiter.limitRefreshPeriod}"></td>
+						<td th:text="${rateLimiter.timeOutDuration}"></td>
+						<td><button class="delete-ratelimiter btn btn-sm btn-danger" th:attr="data-id=${rateLimiter.ratelimiterId}, data-name=${rateLimiter.applicationName}" type="button">삭제</button></td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		</form>
+
+	</div>
+
+	<!-- 어플리케이션 모달 팝업 -->
+	<div aria-hidden="true" aria-labelledby="applicationModalLabel" class="modal" id="appUpdateModal" tabindex="-1">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="applicationModalLabel">어플리케이션 정보 수정</h5>
+					<button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+				</div>
+				<div class="modal-body">
+					<form method="post" action="/admin/flow/updateApplication" id="updateApplication">
+						<input type="hidden" name="id" th:value="${app.applicationId}">
+						<div class="mb-3">
+							<label class="form-label" for="appName">어플리케이션 이름</label>
+							<input class="form-control" id="appName" th:value="${app.applicationName}" placeholder="이곳에 어플리케이션 이름을 입력하세요" name="application_name" required type="text">
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-secondary" data-bs-dismiss="modal" type="button">닫기</button>
+					<button class="btn btn-primary" form="updateApplication" type="submit">저장</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- 어플리케이션 모달 팝업 끝 -->
+
+	<!-- 벌크헤드 모달 -->
+	<div aria-hidden="true" aria-labelledby="bulkheadModalLabel" class="modal" id="bulkheadModal" tabindex="-1">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="bulkheadModalLabel">동시 수행 제한 설정</h5>
+					<button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+				</div>
+				<div class="modal-body">
+					<form id="bulkheadModalForm">
+						<input type="hidden" name="id" id="bulkheadId">
+						<input type="hidden" name="application_id" id="bulkheadAppId" th:value="${app.applicationId}">
+
+						<div class="mb-3">
+							<label class="form-label" for="bulkheadUrl">URL 패턴</label>
+							<input class="form-control" type="text" id="bulkheadUrl" name="url" placeholder="예) /product/*" required/>
+						</div>
+
+						<div class="mb-3">
+							<label class="form-label" for="maxConcurrentCalls">최대 동시 요청</label>
+							<input class="form-control" type="number" id="maxConcurrentCalls" name="maxConcurrentCalls" required/>
+						</div>
+
+						<div class="mb-3">
+							<label class="form-label" for="maxWaitDuration">제한 초과시 대기 시간(초)</label>
+							<input class="form-control" type="number" id="maxWaitDuration" name="maxWaitDuration" required/>
+						</div>
+
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-secondary" data-bs-dismiss="modal" type="button">닫기</button>
+					<button class="btn btn-primary" id="saveBulkheadBtn" type="button">저장</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- 벌크헤드 모달 끝 -->
+
+	<!-- 레이트리미터 모달 -->
+	<div aria-hidden="true" aria-labelledby="rateLimiterModalLabel" class="modal" id="rateLimiterModal" tabindex="-1">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="rateLimiterModalLabel">요청 제한 설정</h5>
+					<button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+				</div>
+				<div class="modal-body">
+					<form id="rateLimiterModalForm">
+						<input type="hidden" name="id" id="rateLimiterId">
+						<input type="hidden" name="application_id" id="rateLimiterAppId" th:value="${app.applicationId}">
+
+						<div class="mb-3">
+							<label class="form-label" for="rateLimiterType">타입</label>
+							<select class="form-select" name="type" id="rateLimiterType">
+								<option value="0">전체</option>
+								<option value="1" selected>URL별</option>
+								<option value="2">접속자별</option>
+							</select>
+						</div>
+
+						<div class="mb-3" id="rateLimiterUrlDiv">
+							<label class="form-label" for="rateLimiterUrl">URL 패턴</label>
+							<input class="form-control" type="text" id="rateLimiterUrl" name="url" placeholder="예) /product/*" required/>
+						</div>
+
+						<div class="mb-3">
+							<label class="form-label" for="limitForPeriod">요청 제한</label>
+							<input class="form-control" type="number" id="limitForPeriod" name="limitForPeriod"/>
+						</div>
+
+						<div class="mb-3">
+							<label class="form-label" for="limitRefreshPeriod">제한 초기화 시간(초)</label>
+							<input class="form-control" type="number" id="limitRefreshPeriod" name="limitRefreshPeriod"/>
+						</div>
+
+
+						<div class="mb-3">
+							<label class="form-label" for="timeoutDuration">제한 초과시 대기 시간(초)</label>
+							<input class="form-control" type="number" id="timeoutDuration" name="timeoutDuration"/>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-secondary" data-bs-dismiss="modal" type="button">닫기</button>
+					<button class="btn btn-primary" id="saveRateLimiter" type="button">저장</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- 레이트리미터 모달 끝 -->
+
+	<script src="/assets/js/flow/application_detail.js"></script>
+</div>
+<!-- ==================================================== -->
+<!-- End Page Content -->
+<!-- ==================================================== -->
+
+</html>
