@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: spider-codegen-plugin
+Bundle-SymbolicName: spider-codegen-plugin;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: neo.spider.solution.codegen.Activator
+Bundle-ClassPath: .,
+ lib/mysql-connector-j-9.1.0.jar,
+ lib/mybatis-generator-core-1.4.2.jar
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.datatools.enablement.mysql
+Bundle-RequiredExecutionEnvironment: JavaSE-17
+Automatic-Module-Name: spider.codegen.plugin
+Import-Package: jakarta.inject
+Bundle-ActivationPolicy: lazy
