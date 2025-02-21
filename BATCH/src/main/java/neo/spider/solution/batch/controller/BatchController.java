@@ -11,12 +11,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
+import neo.spider.solution.batch.service.FileMaintenanceService;
 
 @RestController
 @RequiredArgsConstructor
 public class BatchController {
 	private final JobLauncher jobLauncher;
 	private final JobRegistry jobRegistry;
+	private String rolledFilesPath = "../spider/logs/rolling";
 
 	@GetMapping("/batch/dbtoapi/{value}")
 	public String firstApi(@PathVariable("value") String value) throws Exception {
@@ -24,6 +26,9 @@ public class BatchController {
 		String uniqVal = value + System.currentTimeMillis();
 
 		JobParameters jobParameters = new JobParametersBuilder().addString("dbtoapi", uniqVal).toJobParameters();
+
+		// document The JobExecution Response: JobExecution이 성공적으로 생성만 되면 항상 반환됨.
+		// TaskExecutor가 멀티스레드 일때는 바로 돌아오고 싱글스레드일 때는 잡이 끝나야 리턴
 
 		try {
 			JobExecution jobExecution = jobLauncher.run(jobRegistry.getJob("dbToApiJob"), jobParameters);
@@ -129,14 +134,14 @@ public class BatchController {
 			while (jobExecution.isRunning()) {
 				Thread.sleep(500);
 			}
-
-//			fileMaintenanceService.cleanupLogFile(filePath);
-			// 폴더 하위 전체 파일 삭제
-//			fileMaintenanceService.cleanupLogFolder(rolledFilesPath);
-
+			
 			if (jobExecution.getStatus() == BatchStatus.FAILED) {
 				return "FAIL";
 			}
+			
+			// 폴더 하위 전체 파일 삭제
+			FileMaintenanceService fileMaintenanceService = new FileMaintenanceService();		
+			fileMaintenanceService.cleanupLogFolder(rolledFilesPath);
 
 			return "OK";
 			

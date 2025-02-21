@@ -71,18 +71,6 @@ public class LogFileToDbBatch {
 	}
 
 	@Bean
-	public ItemProcessor<LogDTO, LogDTO> dummyProcessor3() {
-		return new ItemProcessor<LogDTO, LogDTO>() {
-
-			@Override
-			public LogDTO process(LogDTO item) throws Exception {
-				String threadName = Thread.currentThread().getName();
-				return item;
-			}
-		};
-	}
-
-	@Bean
 	public TaskExecutor syncTaskExecutor() {
 		// 단일 스레드로 실행
 		return new SyncTaskExecutor();
@@ -138,7 +126,6 @@ public class LogFileToDbBatch {
 	public FlatFileItemReader<LogDTO> logReader() {
 
 		FlatFileItemReader<LogDTO> reader = new FlatFileItemReader<>();
-
 		DefaultLineMapper<LogDTO> lineMapper = new DefaultLineMapper<>() {
 			// 파일의 라인 넘버를 로그에 저장해 plantUML 이 순서대로 그려지게 함
 			@Override
@@ -355,9 +342,7 @@ public class LogFileToDbBatch {
 					errorList.add(log);
 				}
 			}
-
-			Chunk<LogDTO> chunk = new Chunk<LogDTO>(eventList);
-
+			
 			loggingEventWriter().write(new Chunk<LogDTO>(eventList));
 			loggingSlowWriter().write(new Chunk<LogDTO>(delayList));
 			loggingErrorWriter().write(new Chunk<LogDTO>(errorList));
