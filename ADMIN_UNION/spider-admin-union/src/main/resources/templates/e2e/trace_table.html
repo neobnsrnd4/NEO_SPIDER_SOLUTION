@@ -38,8 +38,8 @@
 			<script src="//cdn.rawgit.com/jmnote/plantuml-encoder/d133f316/dist/plantuml-encoder.min.js"></script>
 			<script>
                 $("uml").each(function () {
-                    var src = "//www.plantuml.com/plantuml/img/" + window.plantumlEncoder.encode($(this).text());
-                    $(this).replaceWith($('<img style="display:flex; justify-content:center; max-width: 100%;">').attr('src', src));
+                    let src = "//www.plantuml.com/plantuml/img/" + window.plantumlEncoder.encode($(this).text());
+                    $(this).replaceWith($('<img style="display:flex; justify-content:center; max-width: 100%;" src="" alt="plant uml">').attr('src', src));
                 });
 			</script>
 			<script>

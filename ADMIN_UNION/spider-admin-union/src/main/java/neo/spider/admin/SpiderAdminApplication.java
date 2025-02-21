@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class NeoSpiderAdminApplication {
+public class SpiderAdminApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(NeoSpiderAdminApplication.class, args);
+		SpringApplication.run(SpiderAdminApplication.class, args);
 	}
 
 }

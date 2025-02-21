@@ -17,13 +17,13 @@
 			<div class="col-4 p-0">
 				<div class="input-group">
 					<!-- 검색 조건 선택 -->
-					<select class="form-select" name="searchType">
+					<select aria-label="search-type" class="form-select" name="searchType">
 						<option th:selected="${searchType == 'table'}" value="table">테이블 명</option>
 						<option th:selected="${searchType == 'class'}" value="class">클래스 명</option>
 					</select>
 
 					<!-- 검색 키워드 입력 -->
-					<input class="form-control ms-2" name="searchKeyword" placeholder="검색어를 입력하세요"
+					<input aria-label="search-keyword" class="form-control ms-2" name="searchKeyword" placeholder="검색어를 입력하세요"
 					       th:value="${param.searchKeyword}" type="text"/>
 
 					<!-- 검색 버튼 -->
@@ -57,16 +57,13 @@
 					<td th:text="${#dates.format(log.timestamp, 'yyyy-MM-dd HH:mm:ss.SSS')}"></td>
 					<!-- 추적 아이디 -->
 					<td class="text-start">
-						<a th:href="@{'/admin/e2e/trace?traceId=' + ${log.traceId}}">
-							<span th:if="${log.traceId != null}" th:text="${log.traceId}"></span>
-							<span th:unless="${log.traceId != null}">N/A</span>
-						</a>
+						<span th:if="${log.traceId != null}" th:text="${log.traceId}"></span>
+						<span th:unless="${log.traceId != null}">N/A</span>
 					</td>
 					<!-- 호출상세 -->
 					<td class="text-start trace-id">
-						<span th:if="${log.traceId != null}">
-							<a th:text="${log.query != null ? log.query : log.callerComponentName}"></a>
-						</span>
+						<span th:if="${log.traceId != null}"
+							  th:text="${log.query != null ? log.query : log.callerComponentName}"></span>
 						<span th:unless="${log.targetComponentName != null}">N/A</span>
 					</td>
 					<!-- 사용자 IP -->

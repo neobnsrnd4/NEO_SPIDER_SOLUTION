@@ -22,9 +22,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/admin/batch")
 public class BatchController {
-
-	private static final Logger logger = LoggerFactory.getLogger(BatchController.class);
-
 	private final BatchService batchService;
 
 	@GetMapping("/jobList")
@@ -32,11 +29,8 @@ public class BatchController {
 					   @RequestParam(defaultValue = "1") int page,
 					   @RequestParam(defaultValue = "10") int size,
 					   @ModelAttribute BatchJobInstanceDTO paramDto) {
-		logger.info("{}", size);
 		List<BatchJobInstanceDTO> jobList = batchService.findJobs(paramDto, page, size);
-		logger.info("jobList size : {}", jobList.size());
 		int totalJobs = batchService.countJobs(paramDto);
-		logger.info("totalJobs : {}", totalJobs);
 		int totalPages = totalJobs == 0 ? 0 : (int) Math.ceil((double) totalJobs / size);
 		String[] status = { "COMPLETED", "STARTING", "STARTED", "STOPPING", "STOPPED", "FAILED", "UNKNOWN" };
 
@@ -57,8 +51,6 @@ public class BatchController {
 
 		job = batchService.findJobById(paramDto.getInstanceId(), paramDto.getExecutionId());
 
-		logger.info("BatchJobInstanceEntity : " + job.toString());
-
 		if (job.getExec() != null) {
 			steps = batchService.findStepsByJobId(job.getExecutionId());
 		}
@@ -73,8 +65,6 @@ public class BatchController {
 	public String stepDetail(Model model, BatchJobExecutionDTO paramDto) {
 
 		BatchJobExecutionDTO job = batchService.findStepById(paramDto.getExecutionId());
-
-		logger.info("BatchJobExecutionEntity : " + job.toString());
 
 		model.addAttribute("job", job);
 		return "batch/step_detail";
