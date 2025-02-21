@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="Spider Plugin"
+            id="SpiderPlugin">
+      </category>
+      <view
+            id="neo.spider.solution.codegen.views.BrowserView"
+            name="Spider CodeGen"
+            icon="icons/sample.png"
+            class="neo.spider.solution.codegen.views.BrowserView"
+            category="SpiderPlugin"
+            inject="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.jdt.ui.JavaPerspective">
+         <view
+               id="neo.spider.solution.codegen.views.BrowserView"
+               relative="org.eclipse.ui.views.ProblemView"
+               relationship="stack">
+         </view>
+      </perspectiveExtension>
+   </extension>
+
+</plugin>
