@@ -1,4 +1,4 @@
-package com.neobns.accounts;
+package neo.spider.demo.E2E;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
