@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration debug="false">
+	
+	<springProperty name="appName" source="spring.application.name" defaultValue="default" />
+	<springProperty name="logDirectory" source="spider.log.directory" defaultValue="../spider/logs" />
+	<property name="FILE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS}; %logger{}; %X{callTimestamp}; %X{traceId}; %X{requestURL}; %X{userId}; %X{userIP}; %X{device}; %X{calledBy}; %X{current}; %X{executionTime}; %X{responseStatus}; %X{error}; %X{delay}; %X{query} %n"/>
+
+	<appender name="ROLLING_FILE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<!-- 로그를 저장할 파일 경로 -->
+		<!--  <file>../spider/logs/spider-${appName}-active.log</file> -->
+		<file>${logDirectory}/spider-${appName}-active.log</file>
+
+		<!-- 롤링 정책 -->
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<!-- 분 단위로 롤링되며 최대 파일크기 초과 시 i에 인덱스값 순서대로 들어감 -->
+			<fileNamePattern>${logDirectory}/rolling/spider-${appName}-%d{yyyy-MM-dd_HH-mm}.%i.log
+			</fileNamePattern>
+
+			<!-- 최대 파일 사이즈로 같은 분이라도 사이즈 초과 시 새로운 파일에 롤링 -->
+			<maxFileSize>10MB</maxFileSize>
+			<!-- 백업 파일 보존 개수: 분단위로 30일 -->
+			<maxHistory>43200</maxHistory>
+		</rollingPolicy>
+
+		<!-- 필터 설정 (DB와 동일) -->
+		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+			<evaluator>
+				<expression>logger.contains("neo.spider.solution.E2E")</expression>
+			</evaluator>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+
+		<!-- 로그 형식 설정 -->
+		<encoder>
+			<pattern>${FILE_LOG_PATTERN}</pattern>
+		</encoder>
+	</appender>
+	
+	<logger name="neo.spider.solution.E2E" level="INFO" additivity="false">
+		<appender-ref ref="ROLLING_FILE" />
+	</logger>
+
+	
+</configuration>
