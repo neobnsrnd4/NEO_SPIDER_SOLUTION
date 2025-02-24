@@ -8,11 +8,11 @@
 		<version>3.4.1</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>neo.spider.sol.admin</groupId>
-	<artifactId>Boot-10-BatchServer</artifactId>
+	<groupId>neo.spider.solution.admin</groupId>
+	<artifactId>spider-batch</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Boot-10-BatchServer</name>
-	<description>Demo project for Spring Boot</description>
+	<name>SpiderBatch</name>
+	<description>spider batch solution</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -61,26 +61,20 @@
 			<artifactId>spring-batch-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		<!--
-		https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
-		<!--
-		https://mvnrepository.com/artifact/org.mybatis.spring.boot/mybatis-spring-boot-starter -->
 		<dependency>
 			<groupId>org.mybatis.spring.boot</groupId>
 			<artifactId>mybatis-spring-boot-starter</artifactId>
 			<version>3.0.3</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.guicedee.services/slf4j -->
 		<dependency>
 		    <groupId>com.guicedee.services</groupId>
 		    <artifactId>slf4j</artifactId>

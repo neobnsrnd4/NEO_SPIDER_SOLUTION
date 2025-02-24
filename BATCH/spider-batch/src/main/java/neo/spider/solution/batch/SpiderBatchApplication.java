@@ -6,10 +6,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-public class Boot10BatchServerApplication {
+public class SpiderBatchApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(Boot10BatchServerApplication.class, args);
+		SpringApplication.run(SpiderBatchApplication.class, args);
 	}
 
 }

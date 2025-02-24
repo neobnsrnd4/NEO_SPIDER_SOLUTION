@@ -1,10 +1,10 @@
-package neo.spider.sol.admin.Boot_10_BatchServer;
+package neo.spider.solution.batch;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class Boot10BatchServerApplicationTests {
+class SpiderBatchApplicationTests {
 
 	@Test
 	void contextLoads() {
