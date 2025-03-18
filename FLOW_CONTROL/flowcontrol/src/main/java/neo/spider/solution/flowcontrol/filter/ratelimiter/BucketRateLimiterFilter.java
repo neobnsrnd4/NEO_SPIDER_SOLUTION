@@ -1,17 +1,14 @@
 package neo.spider.solution.flowcontrol.filter.ratelimiter;
 
 import java.io.IOException;
-import java.time.Duration;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import io.github.bucket4j.Bucket;
-import io.github.bucket4j.BucketConfiguration;
 import io.github.bucket4j.ConsumptionProbe;
-import io.github.bucket4j.distributed.proxy.ProxyManager;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -19,39 +16,75 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import neo.spider.solution.flowcontrol.ConfigurationProp;
+import neo.spider.solution.flowcontrol.service.BucketRateLimiterService;
+import neo.spider.solution.flowcontrol.service.RedisService;
 
 @Component
 public class BucketRateLimiterFilter implements Filter {
 
-	private ProxyManager<String> proxyManager;
+	private final BucketRateLimiterService bucketRateLimiterService;
+	private final RedisService redisService;
+	private final ConfigurationProp prop;
 
 	@Autowired
-	public BucketRateLimiterFilter(ProxyManager<String> proxyManager) {
-		this.proxyManager = proxyManager;
+	public BucketRateLimiterFilter(BucketRateLimiterService bucketRateLimiterService, RedisService redisService,
+			ConfigurationProp prop) {
+		this.bucketRateLimiterService = bucketRateLimiterService;
+		this.redisService = redisService;
+		this.prop = prop;
+
 	}
 
 	@Override
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
 			throws IOException, ServletException {
 		HttpServletRequest request = (HttpServletRequest) servletRequest;
-		String key = request.getRequestURI();
+		HttpSession session = request.getSession(true);
+		String key = session.getId() + "/" + request.getRequestURI();
+		Bucket bucket = (Bucket) session.getAttribute(key);
 
-		Supplier<BucketConfiguration> bucketSupplier = getConfigSupplier();
-		Bucket bucket = proxyManager.builder().build(key, bucketSupplier);
+		// bucket 기본 설정 및 소비
+		String applicationName = prop.getApplication().getName();
+
+		Long sessionCapacity = Long.parseLong(
+				session.getAttribute("capacity") == null ? "0" : session.getAttribute("capacity").toString());
+		Long sessionRefill = Long
+				.parseLong(session.getAttribute("refill") == null ? "0" : session.getAttribute("refill").toString());
+
+		long capacity = Long.parseLong(redisService.getStringValue(applicationName + "/capacity"));
+		long refill = Long.parseLong(redisService.getStringValue(applicationName + "/refill"));
+
+		System.out.println("// " + sessionCapacity + " : " + sessionRefill);
+
+		if ((sessionCapacity == 0 && sessionRefill == 0) || (sessionCapacity == capacity && sessionRefill == refill)) {
+			// 이전과 같거나 최초
+			session.setAttribute("capacity", capacity);
+			session.setAttribute("refill", refill);
+			bucket = bucketRateLimiterService.getBucket(key, capacity, refill);
+		} else {
+			// configuration replacement
+			System.out.println("// configuration replacement" + sessionCapacity + " : " + sessionRefill);
+			session.setAttribute("capacity", capacity);
+			session.setAttribute("refill", refill);
+			bucket = bucketRateLimiterService.getReplacedBucket(key, capacity, refill);
+		}
+
+		System.out.println(capacity + " capa & refill" + refill);
+
 		ConsumptionProbe probe = bucket.tryConsumeAndReturnRemaining(1);
+		System.out.println("key: " + key);
+		System.out.println("probe : " + probe.toString());
 
 		if (probe.isConsumed()) {
 			filterChain.doFilter(servletRequest, servletResponse);
+			System.out.println("consumed : " + probe.toString());
 		} else {
 			// fail
 			HttpServletResponse httpServletResponse = sendErrorResponse(servletResponse, probe);
+			System.out.println("failed : " + probe.toString());
 		}
-
-	}
-
-	public Supplier<BucketConfiguration> getConfigSupplier() {
-		return () -> BucketConfiguration.builder()
-				.addLimit(limit -> limit.capacity(5).refillGreedy(5, Duration.ofMinutes(3))).build();
 	}
 
 	private HttpServletResponse sendErrorResponse(ServletResponse servletResponse, ConsumptionProbe probe)
