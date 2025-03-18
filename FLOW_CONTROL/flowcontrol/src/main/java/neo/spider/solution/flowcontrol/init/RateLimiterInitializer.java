@@ -37,10 +37,10 @@ public class RateLimiterInitializer {
     public void init(){
         // 어플리케이션이 현재 등록되어 있지 않은 경우
         // 읽어올 값 역시 없을 테니 즉시 종료한다.
-        if (applicationMapper.count(prop.getName()) == 0){
+        if (applicationMapper.count(prop.getApplication().getName()) == 0){
             return;
         }
-        long id = applicationMapper.findIdByName(prop.getName());
+        long id = applicationMapper.findIdByName(prop.getApplication().getName());
         List<RateLimiterDto> rateLimiters = rateLimiterMapper.findAll(id);
         for (RateLimiterDto rateLimiter : rateLimiters) {
             RateLimiterConfig newConfig = RateLimiterConfig.custom()

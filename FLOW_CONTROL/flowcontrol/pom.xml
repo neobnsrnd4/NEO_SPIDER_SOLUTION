@@ -107,7 +107,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
-
+		<dependency>
+		    <groupId>com.bucket4j</groupId>
+		    <artifactId>bucket4j-redis</artifactId>
+		    <version>8.9.0</version>
+		</dependency>
 
     </dependencies>
 

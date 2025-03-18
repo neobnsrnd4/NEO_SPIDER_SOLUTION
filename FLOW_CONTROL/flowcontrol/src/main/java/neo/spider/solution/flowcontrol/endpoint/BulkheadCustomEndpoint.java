@@ -33,7 +33,7 @@ public class BulkheadCustomEndpoint {
             Integer room = bulkhead.getMetrics().getAvailableConcurrentCalls();
             rooms.put(name, room);
         }
-        result.put("application", prop.getName());
+        result.put("application", prop.getApplication().getName());
         result.put("rooms", rooms);
 
         return result;

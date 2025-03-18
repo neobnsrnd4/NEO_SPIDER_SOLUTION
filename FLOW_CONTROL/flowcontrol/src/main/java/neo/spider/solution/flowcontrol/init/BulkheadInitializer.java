@@ -36,10 +36,10 @@ public class BulkheadInitializer {
 
     @PostConstruct
     public void init(){
-        if (applicationMapper.count(prop.getName()) == 0){
+        if (applicationMapper.count(prop.getApplication().getName()) == 0){
             return;
         }
-        long id = applicationMapper.findIdByName(prop.getName());
+        long id = applicationMapper.findIdByName(prop.getApplication().getName());
         List<BulkheadDto> bulkheads = mapper.findAll(id);
         for (BulkheadDto bulkhead : bulkheads) {
             BulkheadConfig bulkheadConfig = BulkheadConfig.custom()
