@@ -28,13 +28,13 @@ public class FlowConfigUpdateService {
 	private final RateLimiterRegistry rateLimiterRegistry;
 	private final ObjectMapper objectMapper;
 	private final TrieRegistry trieRegistry;
-	private final BucketRateLimiterService bucketRateLimiterService;
+	private final RedisRateLimiterService bucketRateLimiterService;
 	private final RedisService redisService;
 	private final ConfigurationProp prop;
 
 	public FlowConfigUpdateService(BulkheadRegistry bulkheadRegistry, RateLimiterRegistry rateLimiterRegistry,
 			ObjectMapper objectMapper, BulkheadMapper bulkheadMapper, RateLimiterMapper rateLimiterMapper,
-			TrieRegistry trieRegistry, BucketRateLimiterService bucketRateLimiterService, RedisService redisService,
+			TrieRegistry trieRegistry, RedisRateLimiterService bucketRateLimiterService, RedisService redisService,
 			ConfigurationProp prop) {
 		this.bulkheadRegistry = bulkheadRegistry;
 		this.rateLimiterRegistry = rateLimiterRegistry;

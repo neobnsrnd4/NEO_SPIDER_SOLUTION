@@ -252,3 +252,149 @@ $('.delete-ratelimiter').each(function(index, button){
         }
     });
 });
+
+
+
+
+/***** 레디스 레이트리미터 관련 자바스크립트 *****/
+// 레디스 레이트리미터 모달창 열기
+document.querySelectorAll(".open-rateLimiter-modal-by-redis").forEach(button => {
+    button.addEventListener("click", function() {
+        // 추가 | 수정 여부 전달
+        const dataType = this.getAttribute("data-type");
+        $('#saveRateLimiterByRedis').attr("data-type", dataType);
+
+        if(dataType === 'update'){ // 수정 모달창의 경우 value 값 세팅
+            const dataId = this.getAttribute('data-id');
+            $.ajax({
+                type: 'GET',
+                url: '/admin/flow/ratelimiterByRedis/find?ratelimiterId=' + dataId,
+                success: function(response){
+                    $('#rateLimiterModalLabelByRedis').text("요청 제한 수정");
+                    $('#rateLimiterIdByRedis').val(response.ratelimiterId);
+                    $('#rateLimiterTypeByRedis').val(response.type);
+                    $('#rateLimiterTypeByRedis').prop('disabled', true);
+                    $('#rateLimiterUrlByRedis').val(response.url);
+                    $('#limitForPeriodByRedis').val(parseInt(response.limitForPeriod));
+                    $('#limitRefreshPeriodByRedis').val(parseInt(response.limitRefreshPeriod));
+                    $('#timeoutDurationByRedis').val(parseInt(response.timeoutDuration));
+
+
+                    $('#rateLimiterUrlByRedis').prop('disabled', true);
+                    // if (response.type !== 1){
+                    //     $('#rateLimiterUrl').prop('disabled', true);
+                    // } else {
+                    //     $('#rateLimiterUrl').prop('disabled', false);
+                    // }
+                }
+            });
+        } else if(dataType === 'create') { // 추가 모달창의 경우 value 값 리셋
+            $('#rateLimiterModalLabelByRedis').text("요청 제한 등록");
+            $('#rateLimiterModalFormByRedis')[0].reset();
+            $('#rateLimiterTypeByRedis').prop('disabled', false);
+            $('#rateLimiterUrlByRedis').prop('disabled', false);
+        }
+
+        const modalElement = document.getElementById('rateLimiterModalByRedis');
+        const rateLimiterModal = new bootstrap.Modal(modalElement);
+        rateLimiterModal.show();
+    });
+});
+
+// 레이트리미터 모달창 버튼 이벤트
+$('#saveRateLimiterByRedis').on('click', function(){
+    const dataType = $(this).attr('data-type');
+    if(dataType === 'create'){
+        createRateLimiterByRedis();
+    }else if(dataType === 'update'){
+        updateRateLimiterByRedis();
+    }
+})
+
+// 레이트리미터 추가
+const createRateLimiterByRedis = () => {
+    const data = {
+        'applicationId': $('#rateLimiterAppIdByRedis').val(),
+        'url' : $('#rateLimiterUrlByRedis').val(),
+        'type' : $('#rateLimiterTypeByRedis').val(),
+        'limitForPeriod' : $('#limitForPeriodByRedis').val(),
+        'limitRefreshPeriod' : $('#limitRefreshPeriodByRedis').val(),
+        'timeoutDuration' : $('#timeoutDurationByRedis').val(),
+    };
+    if (data.type === 1){
+        data["url"] = $('#rateLimiterUrlByRedis').val();
+    }
+    $.ajax({
+        type: 'POST',
+        url: '/admin/flow/ratelimiterByRedis/create',
+        data: JSON.stringify(data),
+        contentType: 'application/json',
+        success: function(response){
+            location.reload();
+        },
+        error : function (xhr){
+            alert(xhr.responseText);
+        }
+    });
+};
+
+// 레이트리미터 추가 시 패턴에 따른 input 창 유무 변경
+$('#rateLimiterTypeByRedis').on('change', function(){
+    let inputElement = `<label class="form-label" for="rateLimiterUrlByRedis">URL 패턴</label>
+                                <input class="form-control" type="text" id="rateLimiterUrlByRedis" name="url" placeholder="예) /product/*" required/>`;
+    if ($(this).val() === '1'){
+        $("#rateLimiterUrlDivByRedis").append(inputElement);
+    } else {
+        $("#rateLimiterUrlDivByRedis").empty();
+    }
+});
+
+// 레디스 레이트리미터 수정
+const updateRateLimiterByRedis = () => {
+    const data = {
+        'ratelimiterId' : $('#rateLimiterIdByRedis').val(),
+        'applicationId': $('#rateLimiterAppIdByRedis').val(),
+        'url' : $('#rateLimiterUrlByRedis').val(),
+        'type' : $('#rateLimiterTypeByRedis').val(),
+        'limitForPeriod' : $('#limitForPeriodByRedis').val(),
+        'limitRefreshPeriod' : $('#limitRefreshPeriodByRedis').val(),
+        'timeoutDuration' : $('#timeoutDurationByRedis').val(),
+    };
+    $.ajax({
+        type: 'POST',
+        url: '/admin/flow/ratelimiterByRedis/update',
+        data: JSON.stringify(data),
+        contentType: 'application/json',
+        success: function(response){
+            location.reload();
+        },
+        error : function (xhr){
+            console.log(xhr.responseText);
+        }
+    });
+};
+
+// 레디스 레이트리미터 삭제
+$('.delete-ratelimiter-by-redis').each(function(index, button){
+    $(button).click(function() {
+        if (confirm("삭제하시겠습니까?")) {
+            const dataId = $(button).attr('data-id');
+            const dataName = $(button).attr('data-name');
+            $.ajax({
+                type: 'GET',
+                url: '/admin/flow/ratelimiterByRedis/delete?ratelimiterId=' + dataId + '&applicationName=' + dataName,
+                success: function (response) {
+                    alert(response);
+                    location.reload();
+                },
+                error: function (xhr) {
+                    alert(xhr.responseText);
+                }
+            })
+        }
+    });
+});
+
+
+
+

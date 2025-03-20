@@ -14,11 +14,11 @@ import io.github.bucket4j.distributed.proxy.ProxyManager;
 import io.lettuce.core.Limit;
 
 @Service
-public class BucketRateLimiterService {
+public class RedisRateLimiterService {
 
 	private final ProxyManager<String> proxyManager;
 
-	public BucketRateLimiterService(ProxyManager<String> proxyManager) {
+	public RedisRateLimiterService(ProxyManager<String> proxyManager) {
 		this.proxyManager = proxyManager;
 	}
 

@@ -1,9 +1,10 @@
-package neo.spider.solution.flowcontrol.filter.ratelimiter;
+package neo.spider.solution.flowcontrol.filter.ratelimiter.redis;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.quartz.QuartzEndpoint.GroupNamesDescriptor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -18,28 +19,42 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import neo.spider.solution.flowcontrol.ConfigurationProp;
-import neo.spider.solution.flowcontrol.service.BucketRateLimiterService;
+import neo.spider.solution.flowcontrol.filter.ratelimiter.FilterManager;
+import neo.spider.solution.flowcontrol.service.RedisRateLimiterService;
 import neo.spider.solution.flowcontrol.service.RedisService;
 
-@Component
-public class BucketRateLimiterFilter implements Filter {
+public class RedisPersonalRateLimiterFilter implements Filter {
 
-	private final BucketRateLimiterService bucketRateLimiterService;
-	private final RedisService redisService;
+	private final FilterManager filterManager;
 	private final ConfigurationProp prop;
+	private final String groupName;
+	private final RedisRateLimiterService redisRateLimiterService;
+	private final RedisService redisService;
 
 	@Autowired
-	public BucketRateLimiterFilter(BucketRateLimiterService bucketRateLimiterService, RedisService redisService,
-			ConfigurationProp prop) {
-		this.bucketRateLimiterService = bucketRateLimiterService;
-		this.redisService = redisService;
+	public RedisPersonalRateLimiterFilter(FilterManager filterManager, ConfigurationProp prop,
+			RedisRateLimiterService bucketRateLimiterService, RedisService redisService) {
+		this.filterManager = filterManager;
 		this.prop = prop;
+		this.groupName = prop.getFilters().getGroup2();
+		this.redisRateLimiterService = bucketRateLimiterService;
+		this.redisService = redisService;
 
 	}
 
 	@Override
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
 			throws IOException, ServletException {
+
+		// 필터 그룹 비활성화 시 실행 안함
+		if (!filterManager.isGroupEnabled(groupName)) {
+			filterChain.doFilter(servletRequest, servletResponse);
+			System.out.println("redis personal rate limiter 실행 안함");
+			return;
+		}
+		
+		System.out.println("redis personal rate limiter 실행");
+
 		HttpServletRequest request = (HttpServletRequest) servletRequest;
 		HttpSession session = request.getSession(true);
 		String key = session.getId() + "/" + request.getRequestURI();
@@ -62,13 +77,13 @@ public class BucketRateLimiterFilter implements Filter {
 			// 이전과 같거나 최초
 			session.setAttribute("capacity", capacity);
 			session.setAttribute("refill", refill);
-			bucket = bucketRateLimiterService.getBucket(key, capacity, refill);
+			bucket = redisRateLimiterService.getBucket(key, capacity, refill);
 		} else {
 			// configuration replacement
 			System.out.println("// configuration replacement" + sessionCapacity + " : " + sessionRefill);
 			session.setAttribute("capacity", capacity);
 			session.setAttribute("refill", refill);
-			bucket = bucketRateLimiterService.getReplacedBucket(key, capacity, refill);
+			bucket = redisRateLimiterService.getReplacedBucket(key, capacity, refill);
 		}
 
 		System.out.println(capacity + " capa & refill" + refill);

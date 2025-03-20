@@ -14,6 +14,9 @@ spring:
     redis:
       port: 6379
       host: localhost
+  filters:
+    group1: resilience4j
+    group2: bucket4j
 
 server:
   port: 8081
