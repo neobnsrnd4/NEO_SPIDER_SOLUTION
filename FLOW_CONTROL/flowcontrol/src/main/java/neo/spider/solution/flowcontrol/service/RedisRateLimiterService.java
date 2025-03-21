@@ -1,6 +1,5 @@
 package neo.spider.solution.flowcontrol.service;
 
-import java.lang.module.ModuleDescriptor.Builder;
 import java.time.Duration;
 import java.util.function.Supplier;
 
@@ -11,7 +10,6 @@ import io.github.bucket4j.Bucket;
 import io.github.bucket4j.BucketConfiguration;
 import io.github.bucket4j.TokensInheritanceStrategy;
 import io.github.bucket4j.distributed.proxy.ProxyManager;
-import io.lettuce.core.Limit;
 
 @Service
 public class RedisRateLimiterService {
@@ -39,7 +37,7 @@ public class RedisRateLimiterService {
 				.addLimit(Bandwidth.simple(capacity, Duration.ofSeconds(refill))).build();
 
 		bucket.replaceConfiguration(newConfiguration, TokensInheritanceStrategy.RESET);
-		
+
 		System.out.println("replace bucket");
 		return bucket;
 	}

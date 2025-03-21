@@ -213,7 +213,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr th:each="rateLimiter:${rateLimiters}" class="text-center">
+							<tr th:each="rateLimiter:${rateLimitersByRedis}" class="text-center">
 								<td th:text="${rateLimiter.ratelimiterId}"></td>
 								<td><a href="#" class="open-rateLimiter-modal-by-redis"
 									th:attr="data-id=${rateLimiter.ratelimiterId}, data-type='update'">

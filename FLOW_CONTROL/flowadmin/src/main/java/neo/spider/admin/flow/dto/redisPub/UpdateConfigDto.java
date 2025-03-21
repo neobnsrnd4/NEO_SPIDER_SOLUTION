@@ -8,7 +8,7 @@ import neo.spider.admin.flow.dto.ratelimiter.RateLimiterDto;
 @Getter
 @Setter
 public class UpdateConfigDto {
-    //0 : bulkhead, 1: ratelimiter
+    //0 : bulkhead, 1: ratelimiter, 2: redis bulkhead, 3: redis ratelimiter
     private int type;
     //0 : update/create, 1: delete
     private int doing;

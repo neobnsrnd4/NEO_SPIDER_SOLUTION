@@ -7,6 +7,7 @@ import neo.spider.solution.flowcontrol.filter.ratelimiter.DetailRateLimiterFilte
 import neo.spider.solution.flowcontrol.filter.ratelimiter.FilterManager;
 import neo.spider.solution.flowcontrol.filter.ratelimiter.PersonalRateLimiterFilter;
 import neo.spider.solution.flowcontrol.filter.ratelimiter.redis.RedisPersonalRateLimiterFilter;
+import neo.spider.solution.flowcontrol.service.JwtProviderService;
 import neo.spider.solution.flowcontrol.service.RedisRateLimiterService;
 import neo.spider.solution.flowcontrol.service.RedisService;
 import io.github.resilience4j.bulkhead.BulkheadRegistry;
@@ -23,19 +24,22 @@ public class FilterConfiguration {
 	private final ConfigurationProp prop;
 	private final String groupName1;
 	private final String groupName2;
+	private final JwtProviderService jwtProviderService;
 	private final BulkheadRegistry bulkheadRegistry;
 	private final RateLimiterRegistry rateLimiterRegistry;
 	private final TrieRegistry trieRegistry;
 	private final RedisRateLimiterService redisRateLimiterService;
 	private final RedisService redisService;
 
-	public FilterConfiguration(FilterManager filterManager, ConfigurationProp prop, BulkheadRegistry bulkheadRegistry,
+	public FilterConfiguration(FilterManager filterManager, ConfigurationProp prop,
+			JwtProviderService jwtProviderService, BulkheadRegistry bulkheadRegistry,
 			RateLimiterRegistry rateLimiterRegistry, TrieRegistry trieRegistry,
 			RedisRateLimiterService redisRateLimiterService, RedisService redisService) {
 		this.filterManager = filterManager;
 		this.prop = prop;
 		this.groupName1 = prop.getFilters().getGroup1();
 		this.groupName2 = prop.getFilters().getGroup2();
+		this.jwtProviderService = jwtProviderService;
 		this.bulkheadRegistry = bulkheadRegistry;
 		this.rateLimiterRegistry = rateLimiterRegistry;
 		this.trieRegistry = trieRegistry;
@@ -85,7 +89,7 @@ public class FilterConfiguration {
 	@Bean
 	public FilterRegistrationBean<RedisPersonalRateLimiterFilter> RedisPersonalRateLimiterFilter() {
 		FilterRegistrationBean<RedisPersonalRateLimiterFilter> registrationBean = new FilterRegistrationBean<>(
-				new RedisPersonalRateLimiterFilter(filterManager, prop, redisRateLimiterService, redisService));
+				new RedisPersonalRateLimiterFilter(filterManager, prop, jwtProviderService, redisRateLimiterService, redisService));
 		registrationBean.setOrder(100);
 		registrationBean.addUrlPatterns("/*");
 		System.out.println("redis personal rate limiter 등록");

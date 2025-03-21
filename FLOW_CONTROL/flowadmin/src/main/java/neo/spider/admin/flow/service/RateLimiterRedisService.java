@@ -1,30 +1,37 @@
 package neo.spider.admin.flow.service;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import neo.spider.admin.flow.dto.ratelimiter.RateLimiterDto;
 import neo.spider.admin.flow.dto.ratelimiter.RateLimiterSearchDto;
 import neo.spider.admin.flow.dto.redisPub.UpdateConfigDto;
 import neo.spider.admin.flow.mapper.ApplicationMapper;
-import neo.spider.admin.flow.mapper.RateLimiterMapper;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
+import neo.spider.admin.flow.mapper.RateLimiterRedisMapper;
 
 @Service
-public class RateLimiterServiceByRedis {
-	// 레디스에 저장하는 방식으로 수정 중
-    private static final int TYPE = 1; //rateLimiter
+public class RateLimiterRedisService {
+
+    private static final int TYPE = 3; //redis rateLimiter
     private final ObjectMapper objectMapper;
+
+    private final RateLimiterRedisMapper rateLimiterRedisMapper;
+    private final ApplicationMapper applicationMapper;
     private final MessagePublisher messagePublisher;
 
-    public RateLimiterServiceByRedis( ObjectMapper objectMapper, MessagePublisher messagePublisher) {
+    public RateLimiterRedisService(ApplicationMapper applicationMapper , RateLimiterRedisMapper rateLimiterRedisMapper, ObjectMapper objectMapper, MessagePublisher messagePublisher) {
+        this.rateLimiterRedisMapper = rateLimiterRedisMapper;
         this.objectMapper = objectMapper;
+        this.applicationMapper = applicationMapper;
         this.messagePublisher = messagePublisher;
     }
 
     public List<RateLimiterSearchDto> findByApplication(long applicationId, int type, String url) {
-        return rateLimiterMapper.findByApplication(applicationId, type, url);
+        return rateLimiterRedisMapper.findByApplication(applicationId, type, url);
     }
 
     public boolean create(RateLimiterDto newRateLimiter){
@@ -33,7 +40,7 @@ public class RateLimiterServiceByRedis {
         } else if (newRateLimiter.getType() == 2){
             newRateLimiter.setUrl("personal");
         }
-        int result = rateLimiterMapper.create(newRateLimiter);
+        int result = rateLimiterRedisMapper.create(newRateLimiter);
         if (result > 0){
             applicationMapper.updateModified_date(newRateLimiter.getApplicationId());
             UpdateConfigDto updateConfigDto = new UpdateConfigDto();
@@ -56,8 +63,8 @@ public class RateLimiterServiceByRedis {
     }
 
     public boolean delete(long ratelimiterId, String application_name){
-        RateLimiterDto rl = rateLimiterMapper.findById(ratelimiterId);
-        int result = rateLimiterMapper.delete(ratelimiterId);
+        RateLimiterDto rl = rateLimiterRedisMapper.findById(ratelimiterId);
+        int result = rateLimiterRedisMapper.delete(ratelimiterId);
         if (result > 0) {
             applicationMapper.updateModified_date(rl.getApplicationId());
             UpdateConfigDto updateConfigDto = new UpdateConfigDto();
@@ -79,7 +86,7 @@ public class RateLimiterServiceByRedis {
     }
 
     public boolean update(RateLimiterDto rl){
-        int result = rateLimiterMapper.update(rl);
+        int result = rateLimiterRedisMapper.update(rl);
         if (result > 0) {
             applicationMapper.updateModified_date(rl.getApplicationId());
             UpdateConfigDto updateConfigDto = new UpdateConfigDto();
@@ -102,6 +109,6 @@ public class RateLimiterServiceByRedis {
     }
 
     public RateLimiterDto findById(long rateLimiterId){
-        return rateLimiterMapper.findById(rateLimiterId);
+        return rateLimiterRedisMapper.findById(rateLimiterId);
     }
 }

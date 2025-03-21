@@ -28,19 +28,16 @@ public class FlowConfigUpdateService {
 	private final RateLimiterRegistry rateLimiterRegistry;
 	private final ObjectMapper objectMapper;
 	private final TrieRegistry trieRegistry;
-	private final RedisRateLimiterService bucketRateLimiterService;
 	private final RedisService redisService;
 	private final ConfigurationProp prop;
 
 	public FlowConfigUpdateService(BulkheadRegistry bulkheadRegistry, RateLimiterRegistry rateLimiterRegistry,
 			ObjectMapper objectMapper, BulkheadMapper bulkheadMapper, RateLimiterMapper rateLimiterMapper,
-			TrieRegistry trieRegistry, RedisRateLimiterService bucketRateLimiterService, RedisService redisService,
-			ConfigurationProp prop) {
+			TrieRegistry trieRegistry, RedisService redisService, ConfigurationProp prop) {
 		this.bulkheadRegistry = bulkheadRegistry;
 		this.rateLimiterRegistry = rateLimiterRegistry;
 		this.objectMapper = objectMapper;
 		this.trieRegistry = trieRegistry;
-		this.bucketRateLimiterService = bucketRateLimiterService;
 		this.redisService = redisService;
 		this.prop = prop;
 	}
@@ -79,16 +76,6 @@ public class FlowConfigUpdateService {
 				String url = updateConfigDto.getName();
 				RateLimiterDto rateLimiterDto = updateConfigDto.getRateLimiter();
 
-				// redis bucket4j 적용: 기존 레디스 버킷 기준 변경
-				long capacity = rateLimiterDto.getLimitForPeriod();
-				long refill = rateLimiterDto.getLimitRefreshPeriod();
-				String applicationName = prop.getApplication().getName();
-
-				redisService.setStringValue(applicationName + "/capacity", String.valueOf(capacity));
-				redisService.setStringValue(applicationName + "/refill", String.valueOf(refill));
-				
-				System.out.println("capacity, refill : " + capacity + " : " +  refill);
-
 				if (doing == 0) {
 					RateLimiterConfig newConfig = RateLimiterConfig.custom()
 							.limitForPeriod(rateLimiterDto.getLimitForPeriod())
@@ -110,6 +97,30 @@ public class FlowConfigUpdateService {
 						rateLimiterRegistry.remove(url);
 						trieRegistry.getRateLimiterTrie().delete(url);
 					}
+				}
+
+			} else if (updateConfigDto.getType() == 3) {
+				// redis rateLimiter
+				String url = updateConfigDto.getName();
+				RateLimiterDto rateLimiterDto = updateConfigDto.getRateLimiter();
+				String applicationName = prop.getApplication().getName();
+				String capacityKey = applicationName + "/capacity";
+				String refillKey = applicationName + "/refill";
+
+				if (doing == 0) {
+					// update / create
+					// redis bucket4j 적용: 기존 레디스 버킷 기준 변경
+					long capacity = rateLimiterDto.getLimitForPeriod();
+					long refill = rateLimiterDto.getLimitRefreshPeriod();
+					redisService.setStringValue(capacityKey, String.valueOf(capacity));
+					redisService.setStringValue(refillKey, String.valueOf(refill));
+
+					System.out.println("capacity, refill : " + capacity + " : " + refill);
+				} else {
+					// delete
+					redisService.deleteStringValue(capacityKey);
+					redisService.deleteStringValue(refillKey);
+
 				}
 
 			}

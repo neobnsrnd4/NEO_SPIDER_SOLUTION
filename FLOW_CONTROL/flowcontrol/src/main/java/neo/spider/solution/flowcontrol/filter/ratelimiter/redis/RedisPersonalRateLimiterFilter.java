@@ -4,22 +4,23 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.actuate.quartz.QuartzEndpoint.GroupNamesDescriptor;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.ConsumptionProbe;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import neo.spider.solution.flowcontrol.ConfigurationProp;
 import neo.spider.solution.flowcontrol.filter.ratelimiter.FilterManager;
+import neo.spider.solution.flowcontrol.service.JwtProviderService;
 import neo.spider.solution.flowcontrol.service.RedisRateLimiterService;
 import neo.spider.solution.flowcontrol.service.RedisService;
 
@@ -28,16 +29,19 @@ public class RedisPersonalRateLimiterFilter implements Filter {
 	private final FilterManager filterManager;
 	private final ConfigurationProp prop;
 	private final String groupName;
+	private final JwtProviderService jwtProviderService;
 	private final RedisRateLimiterService redisRateLimiterService;
 	private final RedisService redisService;
 
 	@Autowired
 	public RedisPersonalRateLimiterFilter(FilterManager filterManager, ConfigurationProp prop,
-			RedisRateLimiterService bucketRateLimiterService, RedisService redisService) {
+			JwtProviderService jwtProviderService, RedisRateLimiterService redisRateLimiterService,
+			RedisService redisService) {
 		this.filterManager = filterManager;
 		this.prop = prop;
 		this.groupName = prop.getFilters().getGroup2();
-		this.redisRateLimiterService = bucketRateLimiterService;
+		this.jwtProviderService = jwtProviderService;
+		this.redisRateLimiterService = redisRateLimiterService;
 		this.redisService = redisService;
 
 	}
@@ -52,17 +56,49 @@ public class RedisPersonalRateLimiterFilter implements Filter {
 			System.out.println("redis personal rate limiter 실행 안함");
 			return;
 		}
-		
+
 		System.out.println("redis personal rate limiter 실행");
 
 		HttpServletRequest request = (HttpServletRequest) servletRequest;
+		HttpServletResponse response = (HttpServletResponse) servletResponse;
+
+		// jwt 토큰 확인. 쿠키 변경은 막으나 삭제 후 사용을 막기 위해 로그인과 연동 
+		String token = null;
+
+		for (Cookie cookie : request.getCookies()) {
+			if ("X-User-JWT".equals(cookie.getName())) {
+				token = cookie.getValue().trim();
+			}
+		}
+
+		if (token == null || token == "") {
+			token = jwtProviderService.generateToken();
+
+			Cookie cookie = new Cookie("X-User-JWT", token);
+
+			response.addCookie(cookie);
+			System.out.println("jwt 신규 발행. token : " + token);
+		} else {
+			try {
+				Claims claims = jwtProviderService.parseToken(token);
+			} catch (Exception e) {
+				// 인증되지 않은 사용자
+				System.out.println("jwt 인증 실패 사용자 : " + e);
+				HttpServletResponse httpServletResponse = sendJwtAuthenticationFailResponse(servletResponse);
+				return;
+			}
+			System.out.println("jwt 인증 성공 사용자. token : " + token);
+		}
+
 		HttpSession session = request.getSession(true);
-		String key = session.getId() + "/" + request.getRequestURI();
+
+		String applicationName = prop.getApplication().getName();
+		// user , url 모두를 고려한 방법 보류 및 jwt 토큰 방식으로 변경
+//		String key = applicationName + "/" + session.getId() + request.getRequestURI();
+		String key = applicationName + "/" + token;
 		Bucket bucket = (Bucket) session.getAttribute(key);
 
 		// bucket 기본 설정 및 소비
-		String applicationName = prop.getApplication().getName();
-
 		Long sessionCapacity = Long.parseLong(
 				session.getAttribute("capacity") == null ? "0" : session.getAttribute("capacity").toString());
 		Long sessionRefill = Long
@@ -107,14 +143,23 @@ public class RedisPersonalRateLimiterFilter implements Filter {
 
 		String retryTime = "" + TimeUnit.NANOSECONDS.toSeconds(probe.getNanosToWaitForRefill());
 
-		HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
-		httpServletResponse.setContentType("text/plain");
-		httpServletResponse.setHeader("X-Rate-Limit-Retry-After-Seconds", retryTime);
-		httpServletResponse.setStatus(500);
-		httpServletResponse.getWriter().append("Too Many Request. Wait For " + retryTime + " seconds!");
+		HttpServletResponse response = (HttpServletResponse) servletResponse;
+		response.setContentType("text/plain");
+		response.setHeader("X-Rate-Limit-Retry-After-Seconds", retryTime);
+		response.setStatus(500);
+		response.getWriter().append("Too Many Request. Wait For " + retryTime + " seconds!");
 
-		return httpServletResponse;
+		return response;
 
+	}
+
+	private HttpServletResponse sendJwtAuthenticationFailResponse(ServletResponse servletResponse) throws IOException {
+		HttpServletResponse response = (HttpServletResponse) servletResponse;
+		response.setContentType("text/plain");
+		response.setHeader("X-Jwt-Fail", "Failed to Authenticate.");
+		response.setStatus(500);
+		response.getWriter().append("Failed to Authenticate");
+		return response;
 	}
 
 }

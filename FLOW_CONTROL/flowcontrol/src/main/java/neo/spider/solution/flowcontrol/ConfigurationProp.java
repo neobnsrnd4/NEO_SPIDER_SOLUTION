@@ -10,6 +10,7 @@ public class ConfigurationProp {
 	private Application application;
 	private Data data;
 	private Filters filters;
+	private Jwt jwt;
 
 	public Application getApplication() {
 		return application;
@@ -33,6 +34,14 @@ public class ConfigurationProp {
 
 	public void setFilters(Filters filters) {
 		this.filters = filters;
+	}
+
+	public Jwt getJwt() {
+		return jwt;
+	}
+
+	public void setJwt(Jwt jwt) {
+		this.jwt = jwt;
 	}
 
 	public static class Application {
@@ -100,6 +109,19 @@ public class ConfigurationProp {
 
 		public void setGroup2(String group2) {
 			this.group2 = group2;
+		}
+
+	}
+
+	public static class Jwt {
+		private String secret;
+
+		public String getSecret() {
+			return secret;
+		}
+
+		public void setSecret(String secret) {
+			this.secret = secret;
 		}
 
 	}

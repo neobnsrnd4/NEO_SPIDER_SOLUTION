@@ -17,6 +17,8 @@ spring:
   filters:
     group1: resilience4j
     group2: bucket4j
+  jwt:
+    secret: c2VjcmV0S2V5VmFsaGF2ZXRvYmVTdHJvbmdlbm91Z2g=
 
 server:
   port: 8081
