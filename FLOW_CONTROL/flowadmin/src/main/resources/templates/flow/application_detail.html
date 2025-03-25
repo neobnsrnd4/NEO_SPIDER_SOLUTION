@@ -91,7 +91,8 @@
 				</div>
 			</div>
 
-			<div class="card mb-3">
+			<div class="card mb-3 ratelimiter-card" id="ratelimiter-resilience4j"
+				th:style="${app.ratelimiterMode.trim() == 'resilience4j' ? 'display: flex;' : 'display: none;'}">
 				<div class="card-header">
 					<div class="row align-items-center">
 						<div class="col">
@@ -100,6 +101,11 @@
 								<button id="createRateLimiter"
 									class="open-rateLimiter-modal btn btn-soft-primary ms-2"
 									data-type="create" type="button">등록</button>
+
+								<button id="toggleRateLimiter"
+									class="toggle-rateLimiter-card btn btn-soft-info ms-2"
+									th:attr="data-name=${rateLimiters[0].applicationName}, data-type='bucket4j'"
+									type="button">Redis</button>
 							</h4>
 						</div>
 						<div class="col-auto d-sm-block">
@@ -162,9 +168,10 @@
 					</table>
 				</div>
 			</div>
-			
+
 			<!-- Ratelimiter By Redis -->
-			<div class="card mb-3">
+			<div class="ratelimiter-card card mb-3" id="ratelimiter-redis"
+				th:style="${app.ratelimiterMode.trim() == 'resilience4j' ? 'display: none;' : 'display: flex;'}">
 				<div class="card-header">
 					<div class="row align-items-center">
 						<div class="col">
@@ -173,19 +180,24 @@
 								<button id="createRateLimiterByRedis"
 									class="open-rateLimiter-modal-by-redis btn btn-soft-primary ms-2"
 									data-type="create" type="button">등록</button>
+								<button id="toggleRateLimiterByRedis"
+									class="toggle-rateLimiter-card btn btn-soft-info ms-2"
+									th:attr="data-name=${rateLimiters[0].applicationName}, data-type='resilience4j'"
+									type="button">Resilience4j</button>
 							</h4>
 						</div>
 						<div class="col-auto d-sm-block">
 							<div class="input-group">
 								<select aria-label="type" class="form-select ms-2"
 									name="ratelimiterTypeByRedis">
-									<option value="-1" th:selected="${ratelimiterTypeByRedis == -1}">--타입--</option>
+									<option value="-1"
+										th:selected="${ratelimiterTypeByRedis == -1}">--타입--</option>
 									<option value="0" th:selected="${ratelimiterTypeByRedis == 0}">전체</option>
 									<option value="1" th:selected="${ratelimiterTypeByRedis == 1}">URL별</option>
 									<option value="2" th:selected="${ratelimiterTypeByRedis == 2}">접속자별</option>
 								</select> <input aria-label="url" class="form-control ms-2"
-									name="ratelimiterUrlByRedis" type="text" th:value="${ratelimiterUrl}"
-									placeholder="URL 패턴" />
+									name="ratelimiterUrlByRedis" type="text"
+									th:value="${ratelimiterUrl}" placeholder="URL 패턴" />
 								<button class="btn btn-sm btn-primary" type="submit">
 									<i class="ri-search-line fs-5"></i>
 								</button>
@@ -213,7 +225,8 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr th:each="rateLimiter:${rateLimitersByRedis}" class="text-center">
+							<tr th:each="rateLimiter:${rateLimitersByRedis}"
+								class="text-center">
 								<td th:text="${rateLimiter.ratelimiterId}"></td>
 								<td><a href="#" class="open-rateLimiter-modal-by-redis"
 									th:attr="data-id=${rateLimiter.ratelimiterId}, data-type='update'">
@@ -382,26 +395,28 @@
 		</div>
 	</div>
 	<!-- 레이트리미터 모달 끝 -->
-	
+
 	<!-- 레디스 레이트리미터 모달 -->
 	<div aria-hidden="true" aria-labelledby="rateLimiterModalLabelByRedis"
 		class="modal" id="rateLimiterModalByRedis" tabindex="-1">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title" id="rateLimiterModalLabelByRedis">요청 제한 설정</h5>
+					<h5 class="modal-title" id="rateLimiterModalLabelByRedis">요청
+						제한 설정</h5>
 					<button aria-label="Close" class="btn-close"
 						data-bs-dismiss="modal" type="button"></button>
 				</div>
 				<div class="modal-body">
 					<form id="rateLimiterModalFormByRedis">
-						<input type="hidden" name="id" id="rateLimiterIdByRedis"> <input
-							type="hidden" name="application_id" id="rateLimiterAppIdByRedis"
-							th:value="${app.applicationId}">
+						<input type="hidden" name="id" id="rateLimiterIdByRedis">
+						<input type="hidden" name="application_id"
+							id="rateLimiterAppIdByRedis" th:value="${app.applicationId}">
 
 						<div class="mb-3">
-							<label class="form-label" for="rateLimiterTypeByRedis">타입</label> <select
-								class="form-select" name="type" id="rateLimiterTypeByRedis">
+							<label class="form-label" for="rateLimiterTypeByRedis">타입</label>
+							<select class="form-select" name="type"
+								id="rateLimiterTypeByRedis">
 								<option value="0">전체</option>
 								<option value="1" selected>URL별</option>
 								<option value="2">접속자별</option>
@@ -409,27 +424,28 @@
 						</div>
 
 						<div class="mb-3" id="rateLimiterUrlDivByRedis">
-							<label class="form-label" for="rateLimiterUrlByRedis">URL 패턴</label> <input
-								class="form-control" type="text" id="rateLimiterUrlByRedis" name="url"
+							<label class="form-label" for="rateLimiterUrlByRedis">URL
+								패턴</label> <input class="form-control" type="text"
+								id="rateLimiterUrlByRedis" name="url"
 								placeholder="예) /product/*" required />
 						</div>
 
 						<div class="mb-3">
-							<label class="form-label" for="limitForPeriodByRedis">요청 제한</label> <input
-								class="form-control" type="number" id="limitForPeriodByRedis"
-								name="limitForPeriod" />
+							<label class="form-label" for="limitForPeriodByRedis">요청
+								제한</label> <input class="form-control" type="number"
+								id="limitForPeriodByRedis" name="limitForPeriod" />
 						</div>
 
 						<div class="mb-3">
-							<label class="form-label" for="limitRefreshPeriodByRedis">제한 초기화
-								시간(초)</label> <input class="form-control" type="number"
+							<label class="form-label" for="limitRefreshPeriodByRedis">제한
+								초기화 시간(초)</label> <input class="form-control" type="number"
 								id="limitRefreshPeriodByRedis" name="limitRefreshPeriod" />
 						</div>
 
 
 						<div class="mb-3">
-							<label class="form-label" for="timeoutDurationByRedis">제한 초과시 대기
-								시간(초)</label> <input class="form-control" type="number"
+							<label class="form-label" for="timeoutDurationByRedis">제한
+								초과시 대기 시간(초)</label> <input class="form-control" type="number"
 								id="timeoutDurationByRedis" name="timeoutDuration" />
 						</div>
 					</form>
@@ -437,7 +453,8 @@
 				<div class="modal-footer">
 					<button class="btn btn-secondary" data-bs-dismiss="modal"
 						type="button">닫기</button>
-					<button class="btn btn-primary" id="saveRateLimiterByRedis" type="button">저장</button>
+					<button class="btn btn-primary" id="saveRateLimiterByRedis"
+						type="button">저장</button>
 				</div>
 			</div>
 		</div>

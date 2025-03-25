@@ -56,4 +56,10 @@
         SET modified_date= sysdate()
         WHERE APPLICATION_ID=#{applicationId}
     </update>
+
+    <update id="updateRatelimiter_mode">
+        UPDATE FWK_APPLICATION
+        SET ratelimiter_mode= #{ratelimiterMode}
+        WHERE APPLICATION_ID=#{applicationId}
+    </update>
 </mapper>

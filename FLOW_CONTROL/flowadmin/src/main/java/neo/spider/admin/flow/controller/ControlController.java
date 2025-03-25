@@ -114,6 +114,7 @@ public class ControlController {
 
 	) {
 		SearchApplicationResultDto application = controlService.findById(id);
+		System.out.println("application : " + application.getRatelimiterMode());
 		List<BulkheadSearchDto> bulkheads = bulkheadService.findByApplication(application.getApplicationId(),
 				bulkheadUrl);
 

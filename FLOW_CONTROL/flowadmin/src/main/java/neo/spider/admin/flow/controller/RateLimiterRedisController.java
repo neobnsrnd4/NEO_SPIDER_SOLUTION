@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import neo.spider.admin.flow.dto.SearchApplicationResultDto;
 import neo.spider.admin.flow.dto.ratelimiter.RateLimiterDto;
 import neo.spider.admin.flow.service.RateLimiterRedisService;
 
@@ -64,6 +65,22 @@ public class RateLimiterRedisController {
 		} catch (RuntimeException e) {
 			return ResponseEntity.status(500).body(e.getMessage());
 		}
+		return ResponseEntity.ok("success");
+	}
+
+	@PostMapping("/toggle")
+	public ResponseEntity<String> update(@RequestBody SearchApplicationResultDto dto) {
+		try {
+			System.out.println("app rate mode" + dto.getRatelimiterMode());
+			boolean result = rateLimiterRedisService.toggleRatelimiter(dto);
+			if (!result) {
+				return ResponseEntity.status(400).body("레이트리미터 모드 전환 실패.");
+			}
+		} catch (RuntimeException e) {
+			System.out.println(e);
+			return ResponseEntity.status(500).body(e.getMessage());
+		}
+
 		return ResponseEntity.ok("success");
 	}
 }

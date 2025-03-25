@@ -19,4 +19,5 @@ public interface ApplicationMapper {
     long findByApplicationCategory(CreateApplicationDto param);
     int update(UpdateApplicationDto param);
     int updateModified_date(long id);
+    int updateRatelimiter_mode(SearchApplicationResultDto dto);
 }
