@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="neo.spider.solution.apimock.mapper.ApiMapper">
+
+    <!-- API 조회 -->
+    <!-- 1. 전체 -->
+    <select id="findAll" parameterType="ApiDTO" resultType="ApiDTO">
+        SELECT 
+        	*
+        FROM
+        	FWK_MOCK_REST_API
+    </select>
+    
+    <!-- 2. 단일 -->
+    <select id="findById" parameterType="Integer" resultType="ApiDTO">
+    	SELECT
+    		*
+    	FROM
+    		FWK_MOCK_REST_API
+    	WHERE
+    		mock_id = #{mockId} 
+    </select>
+    
+    <!-- 3. 멀티 -->
+    <select id="findByIds" parameterType="Integer" resultType="ApiDTO">
+    	SELECT
+    		* 
+    	FROM 
+    		FWK_MOCK_REST_API 
+    	WHERE 
+    		mock_id 
+    	IN 
+        <foreach collection="ids" item="mockId" open="(" separator="," close=")">
+            #{mockId}
+        </foreach>
+    </select>
+
+    <!-- 신규 API 저장 -->
+    <insert id="saveApi" parameterType="ApiDTO">
+        INSERT INTO 
+        	FWK_MOCK_REST_API (
+        		mock_wiremock_id
+        		, mock_api_name
+        		, mock_api_url
+        		, mock_api_request_method
+        		)
+        VALUES (
+        		#{mockWiremockId}
+        		, #{mockApiName}
+        		, #{mockApiUrl}
+        		, #{mockApiRequestMethod}
+        		)
+    </insert>
+
+    <!-- API 업데이트 -->
+    <!-- 1. 실서버 상태 -->
+    <update id="updateCheckedStatus" parameterType="ApiDTO">
+        UPDATE 
+        	FWK_MOCK_REST_API
+        SET
+            mock_last_checked_time = #{mockLastCheckedTime}
+            , mock_last_checked_status = #{mockLastCheckedStatus}
+        WHERE 
+        	mock_id = #{mockId}
+    </update>
+    
+    <!-- 2.대응답 토글(단일) -->
+    <update id="toggleResponseStatusById" parameterType="Integer">
+    	UPDATE 
+    		FWK_MOCK_REST_API 
+    	SET 
+    		mock_response_status = NOT mock_response_status 
+    	WHERE 
+    		mock_id = #{mockId}
+    </update>
+    
+    <!-- 3. 대응답 토글(멀티) -->
+    <update id="toggleResponseStatusByIds" parameterType="Integer">
+        UPDATE 
+        	FWK_MOCK_REST_API
+	    SET 
+	    	mock_response_status = NOT mock_response_status
+	    WHERE mock_id IN
+	    <foreach collection="ids" item="mockId" open="(" separator="," close=")">
+	        #{mockId}
+	    </foreach>
+    </update>
+    
+    <!-- 4. 대응답 지정 -->
+    <update id="changeResponseStatusById" parameterType="ApiDTO">
+    	UPDATE
+    		FWK_MOCK_REST_API
+    	SET
+    		mock_response_status = #{mockResponseStatus}
+    	WHERE
+    		mock_id = #{mockId}
+    </update>
+    
+    <!-- wiremockId 조회 -->
+    <select id="findWireMockIdById" resultType="string">
+        SELECT mock_wiremock_id FROM FWK_MOCK_REST_API WHERE mock_id = #{mockId}
+    </select>
+    
+    <!-- API 삭제 -->
+    <delete id="deleteById" parameterType="int">
+        DELETE FROM FWK_MOCK_REST_API
+        WHERE mock_id = #{mockId}
+    </delete>
+    
+    <!-- API 수정 -->
+    <update id="updateById" parameterType="ApiDTO">
+        UPDATE FWK_MOCK_REST_API
+        SET mock_wiremock_id = #{mockWiremockId}, 
+            mock_api_name = #{mockApiName}, 
+            mock_api_url = #{mockApiUrl},
+            mock_api_request_method = #{mockApiRequestMethod}
+        WHERE mock_id = #{mockId};
+    </update>
+    
+</mapper>

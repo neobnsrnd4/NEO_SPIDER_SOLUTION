@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<!-- ========== App Menu Start ========== -->
+<div class="main-nav" th:fragment="appmenu">
+	<!-- Sidebar Logo -->
+	<div class="logo-box">
+		<a class="logo-dark" href="/indexPage">
+			<img alt="logo sm" class="logo-sm" src="/assets/images/logo-sm.png">
+			<img alt="logo dark" class="logo-lg" src="/assets/images/logo-dark.png">
+		</a>
+
+		<a class="logo-light" href="/indexPage">
+			<img alt="logo sm" class="logo-sm" src="/assets/images/logo-sm.png">
+			<img alt="logo light" class="logo-lg" src="/assets/images/logo-light.png">
+		</a>
+	</div>
+
+	<!-- Menu Toggle Button (sm-hover) -->
+	<button aria-label="Show Full Sidebar" class="button-sm-hover" type="button">
+		<i class="ri-menu-2-line fs-24 button-sm-hover-icon"></i>
+	</button>
+
+	<div class="scrollbar" data-simplebar>
+
+		<ul class="navbar-nav" id="navbar-nav">
+
+			<li class="menu-title">Menu</li>
+
+			<li class="nav-item">
+				<a class="nav-link" href="/indexPage">
+					<span class="nav-icon">
+						<i class="ri-home-office-line"></i>
+					</span>
+					<span class="nav-text">Home</span>
+				</a>
+			</li>
+
+			<li class="menu-title">모니터링</li>
+			<li class="nav-item">
+				<a aria-controls="applicationMonitoring" aria-expanded="false" class="nav-link menu-arrow" data-bs-toggle="collapse"
+				   href="#applicationMonitoring" role="button">
+					<span class="nav-icon">
+						<i class="ri-terminal-window-line"></i>
+					</span>
+					<span class="nav-text">E2E 모니터링</span>
+				</a>
+				<div class="collapse" id="applicationMonitoring">
+					<ul class="nav sub-navbar-nav">
+						<li class="sub-nav-item">
+							<a aria-controls="delayApplication" aria-expanded="false" class="sub-nav-link  menu-arrow"
+							   data-bs-toggle="collapse" href="#delayApplication" role="button">
+								<span>지연 어플리케이션</span>
+							</a>
+							<div class="collapse" id="delayApplication">
+								<ul class="nav sub-navbar-nav">
+									<li class="sub-nav-item">
+										<a class="sub-nav-link" href="/admin/e2e/delay/request">요청 지연</a>
+									</li>
+									<li class="sub-nav-item">
+										<a class="sub-nav-link" href="/admin/e2e/delay/query">쿼리 지연</a>
+									</li>
+								</ul>
+							</div>
+						</li>
+						<li class="sub-nav-item">
+							<a class="sub-nav-link" href="/admin/e2e/errors">오류 어플리케이션</a>
+						</li>
+						<li class="sub-nav-item">
+							<a class="sub-nav-link" href="/admin/e2e/influence">영향도 분석</a>
+						</li>
+					</ul>
+				</div>
+			</li>
+
+			<li class="nav-item">
+				<a class="nav-link" href="/admin/batch/jobList">
+					<span class="nav-icon">
+						<i class="ri-survey-line"></i>
+					</span>
+					<span class="nav-text">배치 모니터링</span>
+				</a>
+			</li>
+
+			<li class="menu-title">관리</li>
+			<li class="nav-item">
+				<a class="nav-link" href="/admin/flow/list">
+					<span class="nav-icon">
+						<i class="ri-flow-chart"></i>
+					</span>
+					<span class="nav-text">유량제어 관리</span>
+				</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="http://localhost:8889/admin/mock">
+					<span class="nav-icon">
+						<i class="ri-swap-box-line"></i>
+					</span>
+					<span class="nav-text">API 대응답 관리</span>
+				</a>
+			</li>
+		</ul>
+	</div>
+</div>
+<!-- ========== App Menu End ========== -->
+
+</html>

@@ -1,0 +1,23 @@
+{
+  "id" : "775d414c-4675-4a82-846c-5988e09bb4a0",
+  "request" : {
+    "urlPathPattern" : "/api/v3/coins/markets",
+    "method" : "GET",
+    "queryParameters" : {
+      "ids" : {
+        "equalTo" : "bitcoin"
+      },
+      "vs_currency" : {
+        "equalTo" : "usd"
+      }
+    }
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "{\"version\":\"{{request.path.[1]}}\",\"currency\":\"{{request.query.vs_currency}}\",\"coin_name\":\"{{request.query.ids}}\"}",
+    "transformers" : [ "response-template" ]
+  },
+  "uuid" : "775d414c-4675-4a82-846c-5988e09bb4a0",
+  "persistent" : true,
+  "insertionIndex" : 3
+}

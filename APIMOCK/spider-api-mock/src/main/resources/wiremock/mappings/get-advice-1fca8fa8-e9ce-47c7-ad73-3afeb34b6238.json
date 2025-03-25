@@ -1,0 +1,16 @@
+{
+  "id" : "1fca8fa8-e9ce-47c7-ad73-3afeb34b6238",
+  "request" : {
+    "urlPathPattern" : "/advice",
+    "method" : "GET",
+    "queryParameters" : { }
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "{\"test\":\"server-check api\"}",
+    "transformers" : [ "response-template" ]
+  },
+  "uuid" : "1fca8fa8-e9ce-47c7-ad73-3afeb34b6238",
+  "persistent" : true,
+  "insertionIndex" : 15
+}
