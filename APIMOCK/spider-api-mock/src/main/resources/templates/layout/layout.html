@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>Home | BrandUI - Modern UI Kit with Layout</title>
+	<meta content="width=device-width, initial-scale=1.0" name="viewport">
+	<meta content="A fully responsive premium admin dashboard template, Real Estate Management Admin Template"
+	      name="description"/>
+	<meta content="Techzaa" name="author"/>
+	<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+
+	<!-- App favicon -->
+	<link href="/assets/images/favicon.ico" rel="shortcut icon">
+
+	<!-- Vendor css (Require in all Page) -->
+	<link href="/assets/css/vendor.min.css" rel="stylesheet" type="text/css"/>
+
+	<!-- Icons css (Require in all Page) -->
+	<link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css"/>
+
+	<!-- App css (Require in all Page) -->
+	<link href="/assets/css/app.min.css" rel="stylesheet" type="text/css"/>
+
+	<!-- Theme Config js (Require in all Page) -->
+	<script src="/assets/js/config.min.js"></script>
+
+	<!-- jQuery Js -->
+	<script crossorigin="anonymous" src="https://code.jquery.com/jquery-3.7.1.min.js"
+	        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="></script>
+
+</head>
+<body>
+<!-- START Wrapper -->
+<div class="wrapper">
+
+	<!-- Top Bar -->
+	<th:block th:replace="~{layout/topbar :: topbar}"></th:block>
+
+	<!-- Right Sidebar -->
+	<th:block th:replace="~{layout/sidebar :: sidebar}"></th:block>
+
+	<!-- App Menu -->
+	<th:block th:replace="~{layout/appmenu :: appmenu}"></th:block>
+
+	<!-- Main Content -->
+	<th:block layout:fragment="main"></th:block>
+
+</div>
+<!-- END Wrapper -->
+
+<!-- Vendor Javascript (Require in all Page) -->
+<script src="/assets/js/vendor.js"></script>
+
+<!-- App Javascript (Require in all Page) -->
+<script src="/assets/js/app.js"></script>
+
+<!-- Custom Js -->
+<script src="/assets/js/pages/widgets.js"></script>
+
+</body>
+</html>

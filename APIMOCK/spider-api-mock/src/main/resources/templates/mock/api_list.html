@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en" layout:decorate="~{layout/layout}"
+      xmlns="http://www.w3.org/1999/html"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta content="width=device-width, initial-scale=1.0" name="viewport">
+	<title>API 관리</title>
+	<link href="/assets/css/mockapi.css" rel="stylesheet">
+</head>
+<body>
+<div class="page-content" layout:fragment="main">
+
+	<div class="container" style="max-width: 90%; margin: 0 auto; padding: 0;">
+		<h2 class="mb-4 text-center"><a href="/admin/mock">API 대응답 목록</a></h2>
+
+		<div class="row justify-content-between align-items-center mb-2">
+			<!--  버튼 그룹  -->
+			<div class="justify-content-start col-6 p-0 gap-2">
+				<button class="btn btn-soft-success btn-api-mock">선택한 API 대응답 전환</button>
+				<button class="btn btn-soft-danger btn-api-real">선택한 API By-pass 전환</button>
+				<button class="btn btn-soft-primary btn-api-add" data-type="add">API 추가</button>
+			</div>
+
+			<!--  검색창  -->
+			<form action="/admin/mock" class="col-6 p-0 align-items-center flex-grow-1" method="get">
+				<div class="justify-content-end input-group">
+					<input aria-label="" class="form-control ms-2" name="mockApiName" placeholder="API 이름"
+					       style="max-width: 400px;" th:value="${param.mockApiName}" type="text"/>
+					<input aria-label="" class="form-control ms-2" name="mockApiUrl" placeholder="URL"
+					       style="max-width: 400px;" th:value="${param.mockApiUrl}" type="text"/>
+					<button class="btn btn-sm btn-primary" type="submit">
+						<i class="ri-search-line fs-5"></i></button>
+				</div>
+			</form>
+		</div>
+		<div class="table-responsive">
+			<!-- 검색 결과 없을 때 메시지 -->
+			<div class="m-lg-5 p-lg-5 text-center" th:if="${apiList.size() == 0}">
+				<h4>조회 결과가 없습니다.</h4>
+			</div>
+
+			<table class="table table-hover table-centered" th:unless="${apiList.size() == 0}">
+				<thead>
+				<tr class="text-center">
+					<th>
+						<input aria-label="" class="form-check-input" id="select-all" type="checkbox">
+					</th>
+					<th>순번</th>
+					<th>API 이름</th>
+					<th>URL</th>
+					<th>서버 상태 | 체크</th>
+					<th>연계 모드 | 전환</th>
+					<th>테스트</th>
+					<th>복사</th>
+					<th>삭제</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr th:each="api : ${apiList}" class="text-center">
+					<!-- 선택 체크박스 -->
+					<td>
+						<input aria-label="" class="form-check-input row-checkbox" th:attr="data-id=${api.mockId}" type="checkbox">
+					</td>
+					<!-- 순번 -->
+					<td th:text="${api.mockId}"></td>
+					<!-- API 이름 -->
+					<td class="text-start">
+						<a class="btn-edit" href="#" th:attr="data-id=${api.mockId}, data-type='edit'">
+							<span class="truncate-name" th:attr="data-bs-toggle='tooltip', title=${api.mockApiName}" th:text="${api.mockApiName}"></span>
+						</a>
+					</td>
+					<!-- API 주소 -->
+					<td class="text-start">
+					<span class="truncate-url" th:attr="data-bs-toggle='tooltip', title=${api.mockApiUrl}"
+					      th:text="${api.mockApiUrl}"></span>
+					</td>
+					<!-- 결과 -->
+					<td>
+						<div class="d-flex justify-content-center gap-1">
+					<span class="badge mock-badge bg-success"
+					      th:if="${api.mockLastCheckedStatus != null and api.mockLastCheckedStatus == 0}"
+					      th:text="${#temporals.format(api.mockLastCheckedTime, 'yyyy-MM-dd HH:mm:ss')} + ' | ON'"></span>
+							<span class="badge mock-badge bg-danger"
+							      th:if="${api.mockLastCheckedStatus != null and api.mockLastCheckedStatus != 0}"
+							      th:text="${#temporals.format(api.mockLastCheckedTime, 'yyyy-MM-dd HH:mm:ss')} + ' | OFF'"></span>
+							<span th:if="${api.mockLastCheckedStatus == null}">-</span>
+							<button class="btn btn-dark btn-sm btn-healthcheck" th:attr="data-id=${api.mockId}">
+								<i class="ri-check-line"></i></button>
+						</div>
+					</td>
+					<!-- 상태 -->
+					<td>
+						<div class="d-flex justify-content-center gap-1">
+					<span class="badge mock-badge badge-soft-danger" th:if="${api.mockResponseStatus}"
+					      th:text="'By-pass'"></span>
+							<span class="badge mock-badge badge-soft-success" th:if="!${api.mockResponseStatus}"
+							      th:text="'대응답'"></span>
+							<button class="btn btn-dark btn-sm btn-toggle-mode" th:attr="data-id=${api.mockId}">
+								<i class="ri-repeat-line"></i></button>
+						</div>
+					</td>
+					<!-- 테스트 -->
+					<td>
+						<button class="btn btn-primary btn-sm btn-execute"
+						        th:attr="data-id=${api.mockId}, data-method=${api.mockApiRequestMethod}"
+						        th:disabled="${api.mockApiRequestMethod != 'GET'}">
+							<i class="ri-play-large-fill"></i>
+						</button>
+					</td>
+					<!-- 복사 -->
+					<td>
+						<button class="btn btn-warning btn-sm btn-edit" th:attr="data-id=${api.mockId}, data-type='copy'">복사</button>
+					</td>
+					<!-- 삭제 -->
+					<td>
+						<button class="btn btn-danger btn-sm btn-delete" th:attr="data-id=${api.mockId}">삭제</button>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<div class="row" th:if="${apiList.size() > 0}">
+			<ul class="pagination">
+				<!-- 이전 페이지 그룹 -->
+				<li class="page-item" th:classappend="${currentPage > 10} ? '' : 'disabled'">
+					<a class="page-link"
+					   th:href="@{/admin/mock(page=${(currentPage - 1)/10 * 10}, mockApiName=${param.mockApiName} , mockApiUrl=${param.mockApiUrl})}"
+					   th:if="${currentPage > 10}">
+						« 이전
+					</a>
+					<a class="page-link" href="#" th:unless="${currentPage > 10}">
+						« 이전
+					</a>
+				</li>
+				<!-- 페이지 번호 그룹 -->
+				<li class="page-item"
+				    th:each="pageNum : ${#numbers.sequence((currentPage - 1)/10 * 10 + 1, (((currentPage - 1)/10 + 1) * 10 > totalPages ? totalPages : ((currentPage - 1)/10 + 1) * 10))}">
+					<a class="page-link" th:classappend="${pageNum == currentPage} ? 'active' : ''"
+					   th:href="@{/admin/mock(page=${pageNum}, mockApiName=${param.mockApiName} , mockApiUrl=${param.mockApiUrl})}">
+						<span th:text="${pageNum}"></span>
+					</a>
+				</li>
+				<!-- 다음 페이지 그룹 -->
+				<li class="page-item"
+				    th:classappend="${((currentPage - 1)/10 + 1) * 10 < totalPages} ? '' : 'disabled'">
+					<a class="page-link"
+					   th:href="@{/admin/mock(page=${((currentPage - 1)/10 + 1) * 10 + 1}, mockApiName=${param.mockApiName} , mockApiUrl=${param.mockApiUrl})}"
+					   th:if="${((currentPage - 1)/10 + 1) * 10 < totalPages}">
+						다음 »
+					</a>
+					<a class="page-link" href="#" th:unless="${((currentPage - 1)/10 + 1) * 10 < totalPages}">
+						다음 »
+					</a>
+				</li>
+			</ul>
+		</div>
+
+	</div>
+
+	<!-- API 상세 모달 팝업 -->
+	<div aria-hidden="true" aria-labelledby="apiModalLabel" class="modal" id="apiModal" tabindex="-1">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="apiModalLabel">API 정보</h5>
+					<button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+				</div>
+				<div class="modal-body">
+					<form id="add-api-form">
+						<input id="apiId" type="hidden">
+						<input id="statusSelector" type="hidden" value="normal">
+
+						<!-- API 기본 정보 -->
+						<div class="mb-3">
+							<label class="form-label" for="apiName">API 이름</label>
+							<input class="form-control" id="apiName" required type="text">
+						</div>
+						<div class="mb-3">
+							<label class="form-label" for="apiUrl">실제 서버 URL</label>
+							<input class="form-control" id="apiUrl" placeholder="ex) https://spider.neo.com/users"
+							       required type="url">
+				       </div>
+				       <label class="form-label">URL 패턴 설정 (선택 사항, 한 개만 선택 가능)</label>
+					    <div class="checkbox-group">
+					        <input class="form-check-input" type="checkbox" name="urlPattern" id="enableDigits" value="digits">
+					        <label class="form-check-label mx-1" for="enableDigits">숫자 허용</label>
+
+					        <input class="form-check-input" type="checkbox" name="urlPattern" id="enableLetters" value="letters">
+					        <label class="form-check-label mx-1" for="enableLetters">문자 허용</label>
+
+					        <input class="form-check-input" type="checkbox" name="urlPattern" id="enableAlphanumeric" value="alphanumeric">
+					        <label class="form-check-label mx-1" for="enableAlphanumeric">숫자+문자 허용</label>
+
+					        <input class="form-check-input" type="checkbox" name="urlPattern" id="enableSpecialChars" value="special">
+					        <label class="form-check-label mx-1" for="enableSpecialChars">하이픈 포함 허용</label>
+					    </div>
+						
+						<!-- 요청(Request) 설정 -->
+						<h6 class="mt-3">요청(Request) 설정</h6>
+						<div class="mb-3">
+							<label class="form-label" for="httpMethod">HTTP 메서드</label>
+							<select class="form-select" id="httpMethod" onchange="toggleRequestBody()">
+								<option value="GET">GET</option>
+								<option value="POST">POST</option>
+								<option value="PUT">PUT</option>
+								<option value="DELETE">DELETE</option>
+							</select>
+						</div>
+						<div class="mb-3" id="requestBodyContainer">
+							<label class="form-label" for="requestBody">요청 본문 (JSON)</label>
+							<textarea class="form-control" id="requestBody" placeholder='ex) {"id": spider, "name": "neo"}'
+							          rows="4"></textarea>
+						</div>
+
+						<!-- 응답(Response) 설정 -->
+						<h6 class="mt-3">응답(Response) 설정</h6>
+						<div class="mb-3">
+							<label class="form-label" for="responseStatusCode">응답 상태 코드</label>
+							<select class="form-select" id="responseStatusCode">
+								<option value="200">200 OK</option>
+								<option value="400">400 Bad Request</option>
+								<option value="404">404 Not Found</option>
+								<option value="500">500 Internal Server Error</option>
+							</select>
+						</div>
+						<div class="mb-3">
+							<label class="form-label" for="responseBody">응답 본문 (JSON)</label>
+							<textarea class="form-control" id="responseBody" placeholder='ex)
+URL path와 매칭 : {{request.path.[0]}}
+URL Query와 매칭 : {{request.query.key값}}
+URL Body와 매칭 :  {{jsonPath request.body &#39;$.key값&#39;}}'
+							          rows="4"></textarea>
+						</div>
+					</form>
+				</div>
+
+				<div class="modal-footer">
+					<button class="btn btn-secondary" data-bs-dismiss="modal" type="button">닫기</button>
+					<button class="btn btn-primary" id="saveApiButton" type="button">저장</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="/assets/js/mock/api_list.js"></script>
+</div>
+<!-- ==================================================== -->
+<!-- End Page Content -->
+<!-- ==================================================== -->
+</body>
+</html>

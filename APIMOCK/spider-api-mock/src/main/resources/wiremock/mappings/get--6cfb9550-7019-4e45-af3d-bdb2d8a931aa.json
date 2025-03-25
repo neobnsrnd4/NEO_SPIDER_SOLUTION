@@ -1,0 +1,21 @@
+{
+  "id" : "6cfb9550-7019-4e45-af3d-bdb2d8a931aa",
+  "request" : {
+    "urlPathPattern" : "/",
+    "method" : "GET",
+    "queryParameters" : {
+      "name" : {
+        "equalTo" : "michael"
+      }
+    }
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "{\"ageAPI name\":\"{{request.query.name}}\",\"testAPI\":\"test1\"}",
+    "proxyBaseUrl" : "https://api.agify.io",
+    "transformers" : [ "response-template" ]
+  },
+  "uuid" : "6cfb9550-7019-4e45-af3d-bdb2d8a931aa",
+  "persistent" : true,
+  "insertionIndex" : 1
+}
