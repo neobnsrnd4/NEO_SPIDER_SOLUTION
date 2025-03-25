@@ -1,0 +1,17 @@
+{
+  "id" : "637303d9-9aae-47e8-8cc3-1b7774e9404d",
+  "request" : {
+    "urlPathPattern" : "/comments/[a-zA-Z0-9-]++",
+    "method" : "GET",
+    "queryParameters" : { }
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "{\"Rest API\":\"{{request.path.[0]}}\",\"number\":\"{{request.path.[1]}}\"}",
+    "proxyBaseUrl" : "https://jsonplaceholder.typicode.com",
+    "transformers" : [ "response-template" ]
+  },
+  "uuid" : "637303d9-9aae-47e8-8cc3-1b7774e9404d",
+  "persistent" : true,
+  "insertionIndex" : 4
+}

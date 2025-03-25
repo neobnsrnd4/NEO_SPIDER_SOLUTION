@@ -1,0 +1,28 @@
+.mock-badge {
+    font-size: 14px;
+    font-weight: bold;
+    height: 32px;
+    display: flex;
+    align-items: center; /* 수직 가운데 정렬 */
+    justify-content: center; /* 필요 시 수평 가운데 정렬도 추가 */
+}
+
+.truncate-url {
+    max-width: 300px; /* 최대 너비 설정 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer; /* 마우스 올릴 때 클릭 가능한 것처럼 */
+}
+
+.truncate-name {
+    max-width: 200px; /* 최대 너비 설정 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer; /* 마우스 올릴 때 클릭 가능한 것처럼 */
+}
