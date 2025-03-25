@@ -2,6 +2,7 @@ package neo.spider.admin.e2e.service;
 
 import java.util.List;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import neo.spider.admin.e2e.dto.LogDTO;
@@ -9,6 +10,7 @@ import neo.spider.admin.e2e.mapper.LogMapper;
 
 import lombok.RequiredArgsConstructor;
 
+@ConditionalOnProperty(name = "e2e.monitoring.enabled", havingValue = "true")
 @Service
 @RequiredArgsConstructor
 public class LogService {

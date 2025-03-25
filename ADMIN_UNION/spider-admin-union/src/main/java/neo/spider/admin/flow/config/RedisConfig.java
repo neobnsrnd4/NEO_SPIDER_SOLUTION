@@ -1,16 +1,14 @@
 package neo.spider.admin.flow.config;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-/*
- * 유량제어 관리 페이지를 사용하지 않는 경우
- * RedisConfig.java 코드 전체를 주석 처리(또는 파일 삭제)하여 Redis 실행할 필요 없도록 ****
- */
 
+@ConditionalOnProperty(name = "flow.control.enabled", havingValue = "true")
 @Configuration
 public class RedisConfig {
 

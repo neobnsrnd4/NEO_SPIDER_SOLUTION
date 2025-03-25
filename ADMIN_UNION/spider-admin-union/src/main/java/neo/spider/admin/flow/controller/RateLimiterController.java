@@ -2,9 +2,11 @@ package neo.spider.admin.flow.controller;
 
 import neo.spider.admin.flow.dto.ratelimiter.RateLimiterDto;
 import neo.spider.admin.flow.service.RateLimiterService;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@ConditionalOnProperty(name = "flow.control.enabled", havingValue = "true")
 @RestController
 @RequestMapping("admin/flow/ratelimiter")
 public class RateLimiterController {

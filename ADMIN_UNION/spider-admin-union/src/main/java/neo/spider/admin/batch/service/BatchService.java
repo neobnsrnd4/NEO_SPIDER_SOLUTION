@@ -2,6 +2,7 @@ package neo.spider.admin.batch.service;
 
 import java.util.List;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import neo.spider.admin.batch.dto.BatchJobExecutionDTO;
@@ -11,6 +12,7 @@ import neo.spider.admin.batch.mapper.BatchMapper;
 
 import lombok.RequiredArgsConstructor;
 
+@ConditionalOnProperty(name = "batch.monitoring.enabled", havingValue = "true")
 @Service
 @RequiredArgsConstructor
 public class BatchService {

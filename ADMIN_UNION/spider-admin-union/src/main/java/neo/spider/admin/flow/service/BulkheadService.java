@@ -7,10 +7,12 @@ import neo.spider.admin.flow.dto.bulkhead.BulkheadSearchDto;
 import neo.spider.admin.flow.dto.redisPub.UpdateConfigDto;
 import neo.spider.admin.flow.mapper.ApplicationMapper;
 import neo.spider.admin.flow.mapper.BulkheadMapper;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@ConditionalOnProperty(name = "flow.control.enabled", havingValue = "true")
 @Service
 public class BulkheadService {
 
