@@ -10,6 +10,7 @@ import java.time.LocalDate;
 public class SearchApplicationResultDto {
     private long applicationId;
     private String applicationName;
+    private String ratelimiterMode;
     private LocalDate createdDate;
     private LocalDate modifiedDate;
 }

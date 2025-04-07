@@ -11,6 +11,7 @@ public class RateLimiterDto {
 
     // 0: global, 1: method, 2: personal
     private int type;
+    private String ratelimiterMode;
     private String url;
     private int limitForPeriod;
     private long limitRefreshPeriod;
