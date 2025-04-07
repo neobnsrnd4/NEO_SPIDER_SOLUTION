@@ -277,15 +277,8 @@ document.querySelectorAll(".open-rateLimiter-modal-by-redis").forEach(button => 
 					$('#rateLimiterUrlByRedis').val(response.url);
 					$('#limitForPeriodByRedis').val(parseInt(response.limitForPeriod));
 					$('#limitRefreshPeriodByRedis').val(parseInt(response.limitRefreshPeriod));
-					$('#timeoutDurationByRedis').val(parseInt(response.timeoutDuration));
-
 
 					$('#rateLimiterUrlByRedis').prop('disabled', true);
-					// if (response.type !== 1){
-					//     $('#rateLimiterUrl').prop('disabled', true);
-					// } else {
-					//     $('#rateLimiterUrl').prop('disabled', false);
-					// }
 				}
 			});
 		} else if (dataType === 'create') { // 추가 모달창의 경우 value 값 리셋
@@ -319,7 +312,6 @@ const createRateLimiterByRedis = () => {
 		'type': $('#rateLimiterTypeByRedis').val(),
 		'limitForPeriod': $('#limitForPeriodByRedis').val(),
 		'limitRefreshPeriod': $('#limitRefreshPeriodByRedis').val(),
-		'timeoutDuration': $('#timeoutDurationByRedis').val(),
 	};
 	if (data.type === 1) {
 		data["url"] = $('#rateLimiterUrlByRedis').val();
@@ -358,7 +350,6 @@ const updateRateLimiterByRedis = () => {
 		'type': $('#rateLimiterTypeByRedis').val(),
 		'limitForPeriod': $('#limitForPeriodByRedis').val(),
 		'limitRefreshPeriod': $('#limitRefreshPeriodByRedis').val(),
-		'timeoutDuration': $('#timeoutDurationByRedis').val(),
 	};
 	$.ajax({
 		type: 'POST',

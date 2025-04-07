@@ -2,9 +2,12 @@
 <html lang="en" layout:decorate="~{layout/layout}"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	xmlns:th="http://www.thymeleaf.org">
+	<!-- clear cache -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
 <head>
 <title>유량제어 어플리케이션 상세</title>
-
 <script>
         const getBackQuery = () => {
             const searchState = JSON.parse(sessionStorage.getItem("searchState"));
@@ -220,7 +223,6 @@
 								<td>URL 패턴</td>
 								<td>요청 제한</td>
 								<td>제한 초기화 시간(초)</td>
-								<td>제한 초과시 대기 시간(초)</td>
 								<td>삭제</td>
 							</tr>
 						</thead>
@@ -238,7 +240,6 @@
 								<td th:text="${rateLimiter.url}"></td>
 								<td th:text="${rateLimiter.limitForPeriod}"></td>
 								<td th:text="${rateLimiter.limitRefreshPeriod}"></td>
-								<td th:text="${rateLimiter.timeOutDuration}"></td>
 								<td><button
 										class="delete-ratelimiter-by-redis btn btn-sm btn-danger"
 										th:attr="data-id=${rateLimiter.ratelimiterId}, data-name=${rateLimiter.applicationName}"
@@ -440,13 +441,6 @@
 							<label class="form-label" for="limitRefreshPeriodByRedis">제한
 								초기화 시간(초)</label> <input class="form-control" type="number"
 								id="limitRefreshPeriodByRedis" name="limitRefreshPeriod" />
-						</div>
-
-
-						<div class="mb-3">
-							<label class="form-label" for="timeoutDurationByRedis">제한
-								초과시 대기 시간(초)</label> <input class="form-control" type="number"
-								id="timeoutDurationByRedis" name="timeoutDuration" />
 						</div>
 					</form>
 				</div>
