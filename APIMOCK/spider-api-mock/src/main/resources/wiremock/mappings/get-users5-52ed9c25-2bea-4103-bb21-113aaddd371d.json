@@ -1,0 +1,16 @@
+{
+  "id" : "52ed9c25-2bea-4103-bb21-113aaddd371d",
+  "request" : {
+    "urlPathPattern" : "/users/5",
+    "method" : "GET",
+    "queryParameters" : { }
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "{\"path\":\"{{request.path.[1]}}\",\n\"test5\":\"check\"}",
+    "transformers" : [ "response-template" ]
+  },
+  "uuid" : "52ed9c25-2bea-4103-bb21-113aaddd371d",
+  "persistent" : true,
+  "insertionIndex" : 8
+}

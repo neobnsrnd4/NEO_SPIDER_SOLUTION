@@ -1,0 +1,15 @@
+{
+  "id" : "17c590b6-c335-4f2b-8846-d22dc7db833e",
+  "request" : {
+    "urlPattern" : ".*",
+    "method" : "ANY"
+  },
+  "response" : {
+    "status" : 404,
+    "body" : "{ \"error\": \"Requested URL not found\" }"
+  },
+  "uuid" : "17c590b6-c335-4f2b-8846-d22dc7db833e",
+  "persistent" : true,
+  "priority" : 8,
+  "insertionIndex" : 11
+}

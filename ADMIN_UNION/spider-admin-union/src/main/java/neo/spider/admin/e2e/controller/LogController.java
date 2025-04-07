@@ -3,6 +3,7 @@ package neo.spider.admin.e2e.controller;
 import java.time.ZoneId;
 import java.util.List;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +17,7 @@ import neo.spider.admin.e2e.service.TraceUmlService;
 
 import lombok.RequiredArgsConstructor;
 
+@ConditionalOnProperty(name = "e2e.monitoring.enabled", havingValue = "true")
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/admin/e2e")

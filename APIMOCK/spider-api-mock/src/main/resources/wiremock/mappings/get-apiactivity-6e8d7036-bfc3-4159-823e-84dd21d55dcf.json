@@ -1,0 +1,16 @@
+{
+  "id" : "6e8d7036-bfc3-4159-823e-84dd21d55dcf",
+  "request" : {
+    "urlPathPattern" : "/api/activity",
+    "method" : "GET",
+    "queryParameters" : { }
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "{\"test\":\"server-check\"}",
+    "transformers" : [ "response-template" ]
+  },
+  "uuid" : "6e8d7036-bfc3-4159-823e-84dd21d55dcf",
+  "persistent" : true,
+  "insertionIndex" : 14
+}

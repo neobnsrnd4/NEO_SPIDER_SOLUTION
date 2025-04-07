@@ -6,10 +6,12 @@ import neo.spider.admin.flow.dto.SearchApplicationResultDto;
 import neo.spider.admin.flow.dto.SearchDto;
 import neo.spider.admin.flow.dto.UpdateApplicationDto;
 import neo.spider.admin.flow.mapper.ApplicationMapper;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@ConditionalOnProperty(name = "flow.control.enabled", havingValue = "true")
 @Service
 public class ControlService {
 

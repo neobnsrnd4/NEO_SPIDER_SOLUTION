@@ -11,6 +11,7 @@ import neo.spider.admin.flow.service.BulkheadService;
 import neo.spider.admin.flow.service.ControlService;
 import neo.spider.admin.flow.service.MessagePublisher;
 import neo.spider.admin.flow.service.RateLimiterService;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
+@ConditionalOnProperty(name = "flow.control.enabled", havingValue = "true")
 @Controller
 @RequestMapping("/admin/flow")
 public class ControlController {
