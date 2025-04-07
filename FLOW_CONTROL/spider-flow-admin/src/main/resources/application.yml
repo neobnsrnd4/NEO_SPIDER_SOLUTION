@@ -1,6 +1,6 @@
 spring:
   application:
-    name: flowAdmin
+    name: SpiderFlowAdmin
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     url: jdbc:mariadb://neobns.com:13306/db2
