@@ -5,14 +5,14 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.1</version>
+        <version>3.4.4</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.neobns</groupId>
-    <artifactId>flowcontrol</artifactId>
+    <groupId>neo.spider.solution</groupId>
+    <artifactId>spider-flow-control</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>flowcontrol</name>
-    <description>flowcontrol</description>
+    <name>SpiderFlowControl</name>
+    <description>spider-flow-control</description>
     <url/>
     <licenses>
         <license/>
@@ -70,7 +70,6 @@
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
-            <version>1.9.22.1</version>
         </dependency>
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
@@ -91,7 +90,6 @@
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
-            <version>3.1.8</version>
         </dependency>
         <dependency>
             <groupId>org.mariadb.jdbc</groupId>
@@ -115,7 +113,6 @@
 		<dependency>
 		    <groupId>org.springframework.boot</groupId>
 		    <artifactId>spring-boot-starter-cache</artifactId>
-		    <version>3.4.3</version>
 		</dependency>
 		<!-- jwt token -->
 		<dependency>

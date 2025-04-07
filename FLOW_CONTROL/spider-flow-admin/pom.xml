@@ -8,11 +8,11 @@
         <version>3.4.1</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.neobns.admin</groupId>
-    <artifactId>flowadmin</artifactId>
+    <groupId>neo.spider.admin</groupId>
+    <artifactId>spider-flow-admin</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>flowadmin</name>
-    <description>flowadmin</description>
+    <name>SpiderFlowAdmin</name>
+    <description>spider-flow-admin</description>
     <url/>
     <licenses>
         <license/>

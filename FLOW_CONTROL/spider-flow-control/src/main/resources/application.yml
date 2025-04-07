@@ -1,6 +1,6 @@
 spring:
   application:
-    name: flowcontrol
+    name: SpiderFlowControl
   datasource:
 #    url: jdbc:mariadb://neobns.com:13306/db2
 #    username: POC_USER
