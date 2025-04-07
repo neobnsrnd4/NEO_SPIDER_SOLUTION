@@ -6,6 +6,10 @@ spring:
     url: jdbc:mariadb://neobns.com:13306/db2
     username: POC_USER
     password: neobns1!
+  data:
+    redis:
+      port: 6379
+      host: localhost
 mybatis:
   mapper-locations: classpath:mappers/*.xml
   configuration:

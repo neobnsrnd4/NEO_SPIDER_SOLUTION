@@ -27,7 +27,7 @@ public class RateLimiterCustomEndpoint {
         for (RateLimiter rateLimiter : registry.getAllRateLimiters()) {
             tokens.put(rateLimiter.getName(), rateLimiter.getMetrics().getAvailablePermissions());
         }
-        results.put("application", prop.getName());
+        results.put("application", prop.getApplication().getName());
         results.put("available", tokens);
         return results;
     }

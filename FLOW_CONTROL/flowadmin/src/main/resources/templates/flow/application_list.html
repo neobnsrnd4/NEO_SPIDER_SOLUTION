@@ -67,7 +67,7 @@
 					<td th:text="${app.modifiedDate}"></td>
 					<!-- 삭제 -->
 					<td>
-						<button class="btn btn-danger btn-sm delete-app">삭제</button>
+						<button class="btn btn-danger btn-sm delete-app" th:attr="data-value=${app.applicationId}">삭제</button>
 					</td>
 				</tr>
 				</tbody>
