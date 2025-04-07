@@ -49,11 +49,10 @@ public class FlowConfigUpdateService {
 	public void updateConfig(String message) {
 		try {
 			UpdateConfigDto updateConfigDto = objectMapper.readValue(message, UpdateConfigDto.class);
-
-			// ratelimiter mode toggle
-			String mode = updateConfigDto.getRateLimiter().getRatelimiterMode().trim();
 			String applicationName = prop.getApplication().getName();
-			if (mode != null) {
+			// ratelimiter mode toggle	
+			if (updateConfigDto.getRateLimiter() !=null && updateConfigDto.getRateLimiter().getRatelimiterMode() != null) {
+				String mode = updateConfigDto.getRateLimiter().getRatelimiterMode().trim();
 				String toggleResilienceKey = applicationName + "/filterManager/resilience4j";
 				String toggleBucket4jKey = applicationName + "/filterManager/bucket4j";
 				String group1 = prop.getFilters().getGroup1();
@@ -151,6 +150,7 @@ public class FlowConfigUpdateService {
 
 					System.out.println("capacity, refill : " + capacity + " : " + refill);
 				} else {
+					// doing == 1
 					// delete
 					redisService.deleteStringValue(capacityKey);
 					redisService.deleteStringValue(refillKey);

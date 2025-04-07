@@ -33,6 +33,7 @@ public class RateLimiterService {
     }
 
     public boolean create(RateLimiterDto newRateLimiter){
+    	
         if (newRateLimiter.getType() == 0){
             newRateLimiter.setUrl("global");
         } else if (newRateLimiter.getType() == 2){

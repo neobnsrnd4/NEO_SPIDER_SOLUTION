@@ -104,7 +104,7 @@
 
 								<button id="toggleRateLimiter"
 									class="toggle-rateLimiter-card btn btn-soft-info ms-2"
-									th:attr="data-name=${rateLimiters[0].applicationName}, data-type='bucket4j'"
+									th:attr="data-name=${app.applicationName}, data-type='bucket4j'"
 									type="button">Redis</button>
 							</h4>
 						</div>
@@ -182,7 +182,7 @@
 									data-type="create" type="button">등록</button>
 								<button id="toggleRateLimiterByRedis"
 									class="toggle-rateLimiter-card btn btn-soft-info ms-2"
-									th:attr="data-name=${rateLimiters[0].applicationName}, data-type='resilience4j'"
+									th:attr="data-name=${app.applicationName}, data-type='resilience4j'"
 									type="button">Resilience4j</button>
 							</h4>
 						</div>
@@ -253,7 +253,7 @@
 		</form>
 
 	</div>
-
+ 
 	<!-- 어플리케이션 모달 팝업 -->
 	<div aria-hidden="true" aria-labelledby="applicationModalLabel"
 		class="modal" id="appUpdateModal" tabindex="-1">

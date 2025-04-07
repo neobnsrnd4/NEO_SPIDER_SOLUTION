@@ -94,6 +94,7 @@ public class ControlController {
 
 	@GetMapping("/delete")
 	public String delete(Model model, @ModelAttribute SearchDto dto) {
+		System.out.println(dto);
 		int result = controlService.delete(Long.parseLong(dto.getApplicationId()));
 		if (result == 0) {
 			System.out.println("delete failed");
@@ -114,7 +115,6 @@ public class ControlController {
 
 	) {
 		SearchApplicationResultDto application = controlService.findById(id);
-		System.out.println("application : " + application.getRatelimiterMode());
 		List<BulkheadSearchDto> bulkheads = bulkheadService.findByApplication(application.getApplicationId(),
 				bulkheadUrl);
 

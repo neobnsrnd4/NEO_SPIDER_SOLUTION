@@ -341,7 +341,7 @@ const createRateLimiterByRedis = () => {
 // 레이트리미터 추가 시 패턴에 따른 input 창 유무 변경
 $('#rateLimiterTypeByRedis').on('change', function() {
 	let inputElement = `<label class="form-label" for="rateLimiterUrlByRedis">URL 패턴</label>
-                                <input class="form-control" type="text" id="rateLimiterUrlByRedis" name="url" placeholder="예) /product/*" required/>`;
+                                <input class="form-control" type="text" id="rateLimiterUrlByRedis" name="url" placeholder="예) /product" required/>`;
 	if ($(this).val() === '1') {
 		$("#rateLimiterUrlDivByRedis").append(inputElement);
 	} else {

@@ -71,10 +71,12 @@ public class RateLimiterRedisService {
 		if (result > 0) {
 			applicationMapper.updateModified_date(rl.getApplicationId());
 			UpdateConfigDto updateConfigDto = new UpdateConfigDto();
+			updateConfigDto.setRateLimiter(rl);
 			updateConfigDto.setId(ratelimiterId);
 			updateConfigDto.setType(TYPE);
-			updateConfigDto.setDoing(1); // delete
+			updateConfigDto.setDoing(1); 
 			updateConfigDto.setName(rl.getUrl());
+			
 			try {
 				String json = objectMapper.writeValueAsString(updateConfigDto);
 				messagePublisher.publish(application_name, json);
