@@ -2,13 +2,9 @@
 <html lang="en" layout:decorate="~{layout/layout}"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	xmlns:th="http://www.thymeleaf.org">
-	<!-- clear cache -->
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-  <meta http-equiv="Pragma" content="no-cache" />
-  <meta http-equiv="Expires" content="0" />
 <head>
-<title>유량제어 어플리케이션 상세</title>
-<script>
+	<title>유량제어 어플리케이션 상세</title>
+	<script>
         const getBackQuery = () => {
             const searchState = JSON.parse(sessionStorage.getItem("searchState"));
             const {paramPath, ...params} = searchState;

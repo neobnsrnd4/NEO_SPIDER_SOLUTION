@@ -8,11 +8,11 @@
 		<version>3.4.1</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.example</groupId>
-	<artifactId>demo-1</artifactId>
+	<groupId>neo.spider.demo</groupId>
+	<artifactId>spider-E2E-demo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>demo-1</name>
-	<description>Demo project for Spring Boot</description>
+	<name>SpiderE2EDemo</name>
+	<description>Demo project for Spider E2E Solution</description>
 	<url/>
 	<licenses>
 		<license/>

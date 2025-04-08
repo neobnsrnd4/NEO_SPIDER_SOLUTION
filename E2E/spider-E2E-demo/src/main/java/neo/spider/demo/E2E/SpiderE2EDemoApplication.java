@@ -11,11 +11,11 @@ import org.springframework.web.client.RestTemplate;
 import jakarta.annotation.PostConstruct;
 
 @SpringBootApplication
-public class Demo1Application {
+public class SpiderE2EDemoApplication {
 	@Autowired
 	private ApplicationContext applicationContext;
 	public static void main(String[] args) {
-		SpringApplication.run(Demo1Application.class, args);
+		SpringApplication.run(SpiderE2EDemoApplication.class, args);
 	}
 	
 	@PostConstruct
