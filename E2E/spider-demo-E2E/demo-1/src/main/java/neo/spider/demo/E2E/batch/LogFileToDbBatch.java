@@ -45,10 +45,10 @@ public class LogFileToDbBatch {
 	private final DataSource datasource;
 	private final JobRepository jobRepository;
 	private final PlatformTransactionManager transactionManager;
-	private String path = "\\spider\\logs\\rolling\\spider-*.log";
+	private String path = "\\ss\\logs\\rolling\\spider-*.log";
 	private int chunkSize = 500;
 
-	public LogFileToDbBatch(@Qualifier("commonDataSource") DataSource datasource, JobRepository jobRepository,
+	public LogFileToDbBatch(@Qualifier("dataDataSource") DataSource datasource, JobRepository jobRepository,
 			PlatformTransactionManager transactionManager) {
 		super();
 		this.datasource = datasource;
@@ -108,6 +108,7 @@ public class LogFileToDbBatch {
 			int lastIndex = rootPath.lastIndexOf("\\");
 			String rolledPath = "file:" + rootPath.substring(0, lastIndex) + path;
 			rolledPath = rolledPath.replace("\\", "/");
+			System.out.println(" ROLLED PATH : " + rolledPath);
 			resource = patternResolver.getResources(rolledPath);
 			System.out.println("resource len : " + resource.length);
 			multiReader.setResources(resource);
@@ -190,7 +191,7 @@ public class LogFileToDbBatch {
 	@Bean
 	public ItemWriter<LogDTO> loggingEventWriter() {
 
-		String sql = "INSERT INTO FWK_E2E_LOGGING_EVENT_TEST (TIMESTAMP, TRACE_ID, REQUEST_URL, USER_ID, USER_IP, USER_DEVICE_CD, CALLER_COMPONENT_NAME, TARGET_COMPONENT_NAME, EXECUTION_TIME, RESPONSE_STATUS_CD, ERROR_MESSAGE_TEXT, DELAY_MESSAGE_TEXT, QUERY, FILE_SEQUENCE) "
+		String sql = "INSERT INTO FWK_E2E_LOGGING_EVENT (TIMESTAMP, TRACE_ID, REQUEST_URL, USER_ID, USER_IP, USER_DEVICE_CD, CALLER_COMPONENT_NAME, TARGET_COMPONENT_NAME, EXECUTION_TIME, RESPONSE_STATUS_CD, ERROR_MESSAGE_TEXT, DELAY_MESSAGE_TEXT, QUERY, FILE_SEQUENCE) "
 				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		return new JdbcBatchItemWriterBuilder<LogDTO>().dataSource(datasource).sql(sql)
@@ -235,7 +236,7 @@ public class LogFileToDbBatch {
 	@Bean
 	public ItemWriter<LogDTO> loggingSlowWriter() {
 
-		String sql = "INSERT INTO FWK_E2E_LOGGING_DELAY_TEST (TIMESTAMP, TRACE_ID, REQUEST_URL, USER_ID, USER_IP, USER_DEVICE_CD, CALLER_COMPONENT_NAME, TARGET_COMPONENT_NAME, EXECUTION_TIME, RESPONSE_STATUS_CD, ERROR_MESSAGE_TEXT, DELAY_MESSAGE_TEXT, QUERY) "
+		String sql = "INSERT INTO FWK_E2E_LOGGING_DELAY (TIMESTAMP, TRACE_ID, REQUEST_URL, USER_ID, USER_IP, USER_DEVICE_CD, CALLER_COMPONENT_NAME, TARGET_COMPONENT_NAME, EXECUTION_TIME, RESPONSE_STATUS_CD, ERROR_MESSAGE_TEXT, DELAY_MESSAGE_TEXT, QUERY) "
 				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		return new JdbcBatchItemWriterBuilder<LogDTO>().dataSource(datasource).sql(sql)
@@ -281,7 +282,7 @@ public class LogFileToDbBatch {
 	public ItemWriter<LogDTO> loggingErrorWriter() {
 
 		// 성능 개선을 위해 ps 방식으로 변경
-		String sql = "INSERT INTO FWK_E2E_LOGGING_ERROR_TEST (TIMESTAMP, TRACE_ID, REQUEST_URL, USER_ID, USER_IP, USER_DEVICE_CD, CALLER_COMPONENT_NAME, TARGET_COMPONENT_NAME, EXECUTION_TIME, RESPONSE_STATUS_CD, ERROR_MESSAGE_TEXT, DELAY_MESSAGE_TEXT, QUERY) "
+		String sql = "INSERT INTO FWK_E2E_LOGGING_ERROR (TIMESTAMP, TRACE_ID, REQUEST_URL, USER_ID, USER_IP, USER_DEVICE_CD, CALLER_COMPONENT_NAME, TARGET_COMPONENT_NAME, EXECUTION_TIME, RESPONSE_STATUS_CD, ERROR_MESSAGE_TEXT, DELAY_MESSAGE_TEXT, QUERY) "
 				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		return new JdbcBatchItemWriterBuilder<LogDTO>().dataSource(datasource).sql(sql)
