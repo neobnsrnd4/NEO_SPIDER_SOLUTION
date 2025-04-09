@@ -45,7 +45,7 @@ public class LogFileToDbBatch {
 	private final DataSource datasource;
 	private final JobRepository jobRepository;
 	private final PlatformTransactionManager transactionManager;
-	private String path = "\\ss\\logs\\rolling\\spider-*.log";
+	private String path = "\\ss\\logs\\rolling\\spider-*";
 	private int chunkSize = 500;
 
 	public LogFileToDbBatch(@Qualifier("dataDataSource") DataSource datasource, JobRepository jobRepository,
